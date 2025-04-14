@@ -1,66 +1,67 @@
 package hi.event.vinnsla;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class EventStorage {
 
-    private static final String FILE_PATH = "events.json"; // Path to the file where events will be stored
+    private static final String FILE_PATH = "events.json"; // Path to the JSON file
 
     // Save events to a JSON file
     public static void saveEvents(ObservableList<Event> events) {
-        Gson gson = new Gson();
-        try (Writer writer = new FileWriter(FILE_PATH)) {
-            // Convert ObservableList to List
-            List<Event> eventList = events; // ObservableList is a subclass of List, so this works directly
-            gson.toJson(eventList, writer);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter(FILE_PATH)) {
+            // Convert ObservableList to List before saving
+            List<Event> eventList = FXCollections.observableArrayList(events);  // Ensure it's a regular List
+            gson.toJson(eventList, writer); // Serialize the event list to JSON and save to file
         } catch (IOException e) {
-            e.printStackTrace(); // Log the error for debugging
+            e.printStackTrace();
+            showErrorAlert("Error saving events", "An error occurred while saving the event data.", e.getMessage());
         }
     }
 
     // Load events from a JSON file
     public static ObservableList<Event> loadEvents() {
         Gson gson = new Gson();
-        try {
-            // Check if the file exists
-            if (!Files.exists(Paths.get(FILE_PATH))) {
-                // If the file doesn't exist, return an empty ObservableList
-                return FXCollections.observableArrayList();
-            }
-
-            // Read the content of the file
-            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            Type eventListType = new TypeToken<List<Event>>() {}.getType();
-            List<Event> eventList = gson.fromJson(json, eventListType);
-
-            // Check if the eventList is null, handle it gracefully
-            if (eventList == null) {
-                eventList = List.of();  // If deserialization returned null, initialize an empty list
-            }
-
-            // Use `setSelectedFromSerialization` to convert back to SimpleBooleanProperty
-            for (Event event : eventList) {
-                event.setSelectedFromSerialization(event.getSelectedForSerialization());
-            }
-
-            return FXCollections.observableArrayList(eventList); // Convert List back to ObservableList
-        } catch (IOException e) {
-            e.printStackTrace(); // Log the error for debugging
-            return FXCollections.observableArrayList();  // Return empty list in case of error
-        } catch (Exception e) {
-            e.printStackTrace(); // Catch other unexpected exceptions
-            return FXCollections.observableArrayList(); // Return empty list
+        File jsonFile = new File(FILE_PATH);
+        // Check if the file exists before attempting to read
+        if (!jsonFile.exists()) {
+            System.out.println("No event data found, starting with an empty list.");
+            return FXCollections.observableArrayList(); // Return an empty list if the file doesn't exist
         }
+
+        try (FileReader reader = new FileReader(FILE_PATH)) {
+            Type eventListType = new TypeToken<List<Event>>(){}.getType(); // Define the type for list of events
+            List<Event> events = gson.fromJson(reader, eventListType); // Deserialize JSON back to a List of Event objects
+            return FXCollections.observableArrayList(events); // Convert List to ObservableList
+        } catch (IOException | JsonSyntaxException e) {
+            e.printStackTrace();
+            showErrorAlert("Error loading events", "An error occurred while loading the event data.", e.getMessage());
+            return FXCollections.observableArrayList(); // Return an empty list if loading fails
+        }
+    }
+
+    // Helper method to show error alerts
+    private static void showErrorAlert(String title, String header, String content) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        // Show the alert and wait for user confirmation
+        alert.showAndWait();
     }
 }

@@ -1,5 +1,6 @@
 package hi.event.vinnsla;
 
+import com.google.gson.annotations.Expose;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,14 +10,10 @@ import javafx.scene.media.Media;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/******************************************************************************
- *  Nafn    : Ásdís Stefánsdóttir
- *  T-póstur: ahl4@hi.is
- *  Lýsing  : Vinnslu (Model) klasi fyrir viðburði
- *****************************************************************************/
 public class Event {
 
-    public SimpleBooleanProperty selected = new SimpleBooleanProperty(false);
+    // JavaFX properties
+    private SimpleBooleanProperty selected;
     private SimpleStringProperty title;
     private SimpleObjectProperty<LocalDate> date;
     private SimpleObjectProperty<Group> group;
@@ -26,8 +23,28 @@ public class Event {
     private SimpleObjectProperty<LocalTime> time; // Time of the event
     private SimpleStringProperty description; // Description of the event
 
+    // Gson (Expose) fields
+    @Expose
+    private boolean selectedForSerialization;
+    @Expose
+    private String titleForSerialization;
+    @Expose
+    private LocalDate dateForSerialization;
+    @Expose
+    private Group groupForSerialization;
+    @Expose
+    private EventStatus statusForSerialization;
+    @Expose
+    private Media videoMediaForSerialization;
+    @Expose
+    private Image imageMediaForSerialization;
+    @Expose
+    private LocalTime timeForSerialization;
+    @Expose
+    private String descriptionForSerialization;
+
     // Constructor
-    public Event(Boolean selected, String title, LocalDate date, Group group, EventStatus status,
+    public Event(boolean selected, String title, LocalDate date, Group group, EventStatus status,
                  Media videoMedia, Image imageMedia, LocalTime time, String description) {
         this.selected = new SimpleBooleanProperty(selected);
         this.title = new SimpleStringProperty(title);
@@ -38,9 +55,21 @@ public class Event {
         this.imageMedia = new SimpleObjectProperty<>(imageMedia);
         this.time = new SimpleObjectProperty<>(time);
         this.description = new SimpleStringProperty(description);
+
+        // These are used for serialization purposes
+        this.selectedForSerialization = selected;
+        this.titleForSerialization = title;
+        this.dateForSerialization = date;
+        this.groupForSerialization = group;
+        this.statusForSerialization = status;
+        this.videoMediaForSerialization = videoMedia;
+        this.imageMediaForSerialization = imageMedia;
+        this.timeForSerialization = time;
+        this.descriptionForSerialization = description;
     }
 
-    // Getter for 'selected' property (SimpleBooleanProperty)
+    // Getters and setters for JavaFX properties (required for FXML binding)
+
     public SimpleBooleanProperty selectedProperty() {
         return selected;
     }
@@ -53,7 +82,6 @@ public class Event {
         this.selected.set(selected);
     }
 
-    // Getter for 'title' property (SimpleStringProperty)
     public SimpleStringProperty titleProperty() {
         return title;
     }
@@ -66,7 +94,6 @@ public class Event {
         this.title.set(title);
     }
 
-    // Getter for 'date' property (SimpleObjectProperty<LocalDate>)
     public SimpleObjectProperty<LocalDate> dateProperty() {
         return date;
     }
@@ -79,7 +106,6 @@ public class Event {
         this.date.set(date);
     }
 
-    // Getter for 'group' property (SimpleObjectProperty<Group>)
     public SimpleObjectProperty<Group> groupProperty() {
         return group;
     }
@@ -92,7 +118,6 @@ public class Event {
         this.group.set(group);
     }
 
-    // Getter for 'status' property (SimpleObjectProperty<EventStatus>)
     public SimpleObjectProperty<EventStatus> statusProperty() {
         return status;
     }
@@ -105,7 +130,6 @@ public class Event {
         this.status.set(status);
     }
 
-    // Getter for 'videoMedia' property (SimpleObjectProperty<Media>)
     public SimpleObjectProperty<Media> videoMediaProperty() {
         return videoMedia;
     }
@@ -118,7 +142,6 @@ public class Event {
         this.videoMedia.set(videoMedia);
     }
 
-    // Getter for 'imageMedia' property (SimpleObjectProperty<Image>)
     public SimpleObjectProperty<Image> imageMediaProperty() {
         return imageMedia;
     }
@@ -131,7 +154,6 @@ public class Event {
         this.imageMedia.set(imageMedia);
     }
 
-    // Getter for 'time' property (SimpleObjectProperty<LocalTime>)
     public SimpleObjectProperty<LocalTime> timeProperty() {
         return time;
     }
@@ -144,7 +166,6 @@ public class Event {
         this.time.set(time);
     }
 
-    // Getter for 'description' property (SimpleStringProperty)
     public SimpleStringProperty descriptionProperty() {
         return description;
     }
@@ -157,76 +178,77 @@ public class Event {
         this.description.set(description);
     }
 
-    // Getters for serialization
-    public boolean getSelectedForSerialization() {
-        return selected.get();
+    // Gson serialization - Not used for binding but helps with JSON storage
+
+    public boolean isSelectedForSerialization() {
+        return selectedForSerialization;
     }
 
-    public void setSelectedFromSerialization(boolean selected) {
-        this.selected.set(selected);
+    public void setSelectedForSerialization(boolean selectedForSerialization) {
+        this.selectedForSerialization = selectedForSerialization;
     }
 
     public String getTitleForSerialization() {
-        return title.get();
+        return titleForSerialization;
     }
 
-    public void setTitleFromSerialization(String title) {
-        this.title.set(title);
+    public void setTitleForSerialization(String titleForSerialization) {
+        this.titleForSerialization = titleForSerialization;
     }
 
     public LocalDate getDateForSerialization() {
-        return date.get();
+        return dateForSerialization;
     }
 
-    public void setDateFromSerialization(LocalDate date) {
-        this.date.set(date);
+    public void setDateForSerialization(LocalDate dateForSerialization) {
+        this.dateForSerialization = dateForSerialization;
     }
 
     public Group getGroupForSerialization() {
-        return group.get();
+        return groupForSerialization;
     }
 
-    public void setGroupFromSerialization(Group group) {
-        this.group.set(group);
+    public void setGroupForSerialization(Group groupForSerialization) {
+        this.groupForSerialization = groupForSerialization;
     }
 
     public EventStatus getStatusForSerialization() {
-        return status.get();
+        return statusForSerialization;
     }
 
-    public void setStatusFromSerialization(EventStatus status) {
-        this.status.set(status);
+    public void setStatusForSerialization(EventStatus statusForSerialization) {
+        this.statusForSerialization = statusForSerialization;
     }
 
     public Media getVideoMediaForSerialization() {
-        return videoMedia.get();
+        return videoMediaForSerialization;
     }
 
-    public void setVideoMediaFromSerialization(Media videoMedia) {
-        this.videoMedia.set(videoMedia);
+    public void setVideoMediaForSerialization(Media videoMediaForSerialization) {
+        this.videoMediaForSerialization = videoMediaForSerialization;
     }
 
     public Image getImageMediaForSerialization() {
-        return imageMedia.get();
+        return imageMediaForSerialization;
     }
 
-    public void setImageMediaFromSerialization(Image imageMedia) {
-        this.imageMedia.set(imageMedia);
+    public void setImageMediaForSerialization(Image imageMediaForSerialization) {
+        this.imageMediaForSerialization = imageMediaForSerialization;
     }
 
     public LocalTime getTimeForSerialization() {
-        return time.get();
+        return timeForSerialization;
     }
 
-    public void setTimeFromSerialization(LocalTime time) {
-        this.time.set(time);
+    public void setTimeForSerialization(LocalTime timeForSerialization) {
+        this.timeForSerialization = timeForSerialization;
     }
 
     public String getDescriptionForSerialization() {
-        return description.get();
+        return descriptionForSerialization;
     }
 
-    public void setDescriptionFromSerialization(String description) {
-        this.description.set(description);
+    public void setDescriptionForSerialization(String descriptionForSerialization) {
+        this.descriptionForSerialization = descriptionForSerialization;
     }
 }

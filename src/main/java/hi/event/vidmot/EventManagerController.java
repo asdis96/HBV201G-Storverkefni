@@ -5,6 +5,7 @@ import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
 import hi.event.vinnsla.EventStorage;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -79,6 +80,12 @@ public class EventManagerController implements Initializable {
         events = EventStorage.loadEvents();
         eventTableView.setItems(events);
 
+        // Automatically save events when the list changes
+        events.addListener((ListChangeListener<Event>) change -> {
+            // Save events when changes occur
+            EventStorage.saveEvents(events);
+        });
+
         // Other initializations (columns, buttons, etc.)
         selectColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
         selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
@@ -117,11 +124,12 @@ public class EventManagerController implements Initializable {
 
     public void getSelectedEvents() {
         for (Event event : eventTableView.getItems()) {
-            if (event.selectedProperty().get()) {  // Access the selectedProperty() properly
+            if (event.isSelected()) {  // Using the getter method for selected (isSelected())
                 System.out.println("Selected event: " + event.getTitle());
             }
         }
     }
+
 
 
     @FXML
@@ -232,27 +240,27 @@ public class EventManagerController implements Initializable {
         currentStage.close(); // Close the current window (logout)
     }
 
-    // Add event to the list
+    // Add an Event to the list
     public void addEvent(Event event) {
         if (event != null) {
-            events.add(event);
-            eventTableView.setItems(events);
-            EventStorage.saveEvents(events); // Save the updated events list
+            events.add(event);             // Add the event to the observable list
+            eventTableView.setItems(events); // Refresh the table view
+            EventStorage.saveEvents(events); // Save the updated list to storage
         }
     }
 
-    // Update event in the list
+    // Update an existing Event
     public void updateEvent(Event updatedEvent) {
         if (updatedEvent != null) {
             for (int i = 0; i < events.size(); i++) {
                 Event existingEvent = events.get(i);
                 if (existingEvent.equals(updatedEvent)) {
-                    events.set(i, updatedEvent);
-                    eventTableView.setItems(events); // Refresh the TableView
+                    events.set(i, updatedEvent); // Update the event in the list
+                    eventTableView.setItems(events); // Refresh the table view
                     break;
                 }
             }
-            EventStorage.saveEvents(events); // Save the updated events list
+            EventStorage.saveEvents(events); // Save the updated list to storage
         }
     }
 
