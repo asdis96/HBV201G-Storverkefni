@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="eventContent" spacing="15" style="-fx-padding: 20px;">
+
+    <!-- Event Title -->
+    <Label fx:id="fxTitle" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+    <!-- Event Date -->
+    <Label fx:id="fxDate" style="-fx-font-size: 14px;" />
+
+    <!-- Event Time -->
+    <Label fx:id="fxTime" style="-fx-font-size: 14px;" />
+
+    <!-- Event Group -->
+    <Label fx:id="fxGroup" style="-fx-font-size: 14px;" />
+
+    <!-- Event Status -->
+    <Label fx:id="fxStatus" style="-fx-font-size: 14px;" />
+
+    <!-- Event Description -->
+    <Label fx:id="fxDescription" style="-fx-font-size: 14px;" />
+
+    <!-- Event Image (if exists) -->
+    <ImageView fx:id="fxImage" fitWidth="400" fitHeight="300" preserveRatio="true"/>
+
+    <!-- This will load the KynningController and its content -->
+    <fx:include fx:id="mediaView" source="media-view.fxml" />
+
+</VBox>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="600.0" prefWidth="240.0" stylesheets="@eventmanager.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- Title or Header if needed -->
+    <HBox alignment="CENTER">
+        <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="2.0" prefHeight="29.0" prefWidth="209.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Event Manager">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+      <VBox.margin>
+         <Insets bottom="10.0" top="10.0" />
+      </VBox.margin>
+    </HBox>
+
+    <!-- Buttons for Sidebar -->
+    <VBox alignment="CENTER" spacing="50.0" styleClass="sidebarbuttons" stylesheets="@eventmanager.css">
+        <Button fx:id="fxNewEvent" onAction="#onNewEvent" prefHeight="40.0" prefWidth="170.0" text="New Event">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+        <Button fx:id="fxViewEvent" onAction="#onViewEvent" prefHeight="40.0" prefWidth="170.0" text="View Event">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+        <Button fx:id="fxEditEvent" onAction="#onEditEvent" prefHeight="40.0" prefWidth="170.0" text="Edit Event">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+        <Button fx:id="fxDeleteEvent" onAction="#onDeleteEvent" prefHeight="40.0" prefWidth="170.0" text="Delete Event">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+        <Button fx:id="fxChangeStatus" onAction="#onChangeStatus" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent;" text="Change Status">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <VBox.margin>
+         <Insets top="30.0" />
+      </VBox.margin>
+    </VBox>
+</VBox>

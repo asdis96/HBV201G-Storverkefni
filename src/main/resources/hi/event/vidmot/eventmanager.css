@@ -1,0 +1,29 @@
+.svartur {
+    -fx-background-color: black;
+}
+
+.hvittLetur Label {
+    -fx-text-fill: white; /* Setur hvítan texta */
+}
+
+/* öll börnin fá svartan texta */
+.svartLetur Label {
+    -fx-text-fill: black; /* Setur svartan texta */
+}
+
+.hvitur {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.sidebarbuttons Button {
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+}
+
+.label, .button, .text-field, .menu-item, .combo-box{
+   -fx-font-size: 14px;
+
+
+
+}

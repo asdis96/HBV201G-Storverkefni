@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<BorderPane fx:id="root" stylesheets="@eventmanager.css" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
+    <!-- Top section (Menu) -->
+    <top>
+        <fx:include source="menu-view.fxml" />
+    </top>
+
+    <!-- Left section (Sidebar) -->
+    <left>
+        <VBox fx:id="sidebarContainer" prefWidth="250.0" spacing="10.0" stylesheets="@eventmanager.css">
+            <!-- Title or Header if needed -->
+            <HBox alignment="CENTER">
+                <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="2.0" prefHeight="29.0" prefWidth="209.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Event Manager">
+                    <font>
+                        <Font size="16.0" />
+                    </font></Label>
+                <VBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </VBox.margin>
+            </HBox>
+
+            <!-- Sidebar Buttons -->
+            <VBox alignment="CENTER" spacing="30.0" styleClass="sidebarbuttons" stylesheets="@eventmanager.css">
+                <Button fx:id="fxNewEvent" onAction="#onNewEvent" prefHeight="40.0" prefWidth="170.0" text="New Event">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
+                <Button fx:id="fxViewEvent" onAction="#onViewEvent" prefHeight="40.0" prefWidth="170.0" text="View Event">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
+                <Button fx:id="fxEditEvent" onAction="#onEditEvent" prefHeight="40.0" prefWidth="170.0" text="Edit Event">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
+                <Button fx:id="fxDeleteEvent" onAction="#onDeleteEvent" prefHeight="40.0" prefWidth="170.0" text="Delete Event">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
+                <Button fx:id="fxChangeStatus" onAction="#onChangeStatus" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent;" text="Change Status">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Center section (Main Content with TableView) -->
+    <center>
+        <StackPane fx:id="fxEventViews" prefHeight="450.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="eventTableView" layoutX="20" layoutY="20" prefHeight="400" prefWidth="579.0">
+                <!-- Select Column -->
+                <columns>
+                    <TableColumn fx:id="selectColumn" prefWidth="38.0">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="selected" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <!-- Title Column -->
+                    <TableColumn fx:id="titleColumn" prefWidth="236.0" text="Title">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="title" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <!-- Date Column -->
+                    <TableColumn fx:id="dateColumn" prefWidth="105.0" text="Date">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="date" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <!-- Group Column -->
+                    <TableColumn fx:id="groupColumn" prefWidth="111.0" text="Group">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="group" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <!-- Status Column -->
+                    <TableColumn fx:id="statusColumn" prefWidth="68.0" text="Status">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="status" />
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+        </StackPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.*?>
+
+<!-- media-view.fxml -->
+
+<VBox fx:id="overlay" StackPane.alignment="BOTTOM_CENTER" alignment="TOP_CENTER" pickOnBounds="false" spacing="10.0"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="hi.event.vidmot.KynningController"
+      prefWidth="300"
+      VBox.vgrow="ALWAYS"
+>
+    <children>
+        <MediaView VBox.vgrow="ALWAYS" fx:id="fxVideoView"
+                   fitWidth="250.0" fitHeight="200"/>
+        <HBox  alignment="CENTER" prefHeight="31.0" prefWidth="385.0" spacing="10.0">
+            <children>
+
+                <Button fx:id="fxStartButton" disable="true" mnemonicParsing="false" onAction="#start"
+                        text="&lt;&lt;"/>
+                <Button fx:id="fxPlayPause" disable="true" mnemonicParsing="false" onAction="#playPause"
+                        text="&gt;"/>
+                <Button fx:id="fxEndButton" disable="true" mnemonicParsing="false" onAction="#end"
+                        text="&gt;&gt;"/>
+            </children>
+
+        </HBox>
+    </children>
+</VBox>

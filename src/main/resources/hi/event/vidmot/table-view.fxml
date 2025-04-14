@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+
+<TableView fx:id="eventTableView"  layoutX="20" layoutY="20" prefHeight="400" prefWidth="579.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" >
+    <!-- Select Column -->
+    <columns>
+        <TableColumn fx:id="selectColumn" prefWidth="38.0">
+            <cellValueFactory>
+                <PropertyValueFactory property="selected" />
+            </cellValueFactory>
+        </TableColumn>
+
+        <!-- Title Column -->
+        <TableColumn fx:id="titleColumn" prefWidth="236.0" text="Title">
+            <cellValueFactory>
+                <PropertyValueFactory property="title" />
+            </cellValueFactory>
+        </TableColumn>
+
+        <!-- Date Column -->
+        <TableColumn fx:id="dateColumn" prefWidth="105.0" text="Date">
+            <cellValueFactory>
+                <PropertyValueFactory property="date" />
+            </cellValueFactory>
+        </TableColumn>
+
+        <!-- Group Column -->
+        <TableColumn fx:id="groupColumn" prefWidth="111.0" text="Group">
+            <cellValueFactory>
+                <PropertyValueFactory property="group" />
+            </cellValueFactory>
+        </TableColumn>
+
+        <!-- Status Column -->
+        <TableColumn fx:id="statusColumn" prefWidth="68.0" text="Status">
+            <cellValueFactory>
+                <PropertyValueFactory property="status" />
+            </cellValueFactory>
+        </TableColumn>
+    </columns>
+</TableView>
