@@ -1,33 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.media.*?>
-<?import javafx.scene.text.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="eventContent" spacing="15" style="-fx-padding: 20px;">
 
-    <!-- Event Title -->
-    <Label fx:id="fxTitle" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<!-- event view  -->
+<DialogPane fx:id="eventContent" prefHeight="400" prefWidth="580" style="-fx-padding: 20px;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19">
 
-    <!-- Event Date -->
-    <Label fx:id="fxDate" style="-fx-font-size: 14px;" />
+    <!-- Scrollable content -->
+    <content>
+        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="600" maxWidth="600" minHeight="380.0" minWidth="560.0" prefHeight="380.0" prefWidth="560.0">
+            <VBox spacing="15">
+                <!-- Event Title -->
+                <Label fx:id="fxTitle" alignment="CENTER" prefHeight="20.0" prefWidth="524.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Event Title " textAlignment="CENTER" />
 
-    <!-- Event Time -->
-    <Label fx:id="fxTime" style="-fx-font-size: 14px;" />
+                <!-- Event Image (if exists) -->
+                <ImageView fx:id="fxImage" fitHeight="250.0" fitWidth="300.0" preserveRatio="true">
+               <VBox.margin>
+                  <Insets left="115.0" />
+               </VBox.margin></ImageView>
+            <HBox prefHeight="20.0" prefWidth="520.0">
+               <children>
+                  <HBox prefHeight="20.0" prefWidth="250.0">
+                     <children>
 
-    <!-- Event Group -->
-    <Label fx:id="fxGroup" style="-fx-font-size: 14px;" />
+                            <!-- Event Date -->
+                            <Label fx:id="fxDate" prefHeight="18.0" prefWidth="100.0" style="-fx-font-size: 14px;" text="Date:" />
 
-    <!-- Event Status -->
-    <Label fx:id="fxStatus" style="-fx-font-size: 14px;" />
+                            <!-- Event Time -->
+                            <Label fx:id="fxTime" prefHeight="18.0" prefWidth="100.0" style="-fx-font-size: 14px;" text="Time:" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="20.0" prefWidth="250.0" spacing="20.0">
+                     <children>
 
-    <!-- Event Description -->
-    <Label fx:id="fxDescription" style="-fx-font-size: 14px;" />
+                                  <!-- Event Group -->
+                            <Label fx:id="fxGroup" prefWidth="100.0" style="-fx-font-size: 14px;" text="Group" />
 
-    <!-- Event Image (if exists) -->
-    <ImageView fx:id="fxImage" fitWidth="400" fitHeight="300" preserveRatio="true"/>
+                                  <!-- Event Status -->
+                            <Label fx:id="fxStatus" prefWidth="100.0" style="-fx-font-size: 14px;" text="Status" />
+                     </children>
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets left="20.0" />
+               </VBox.margin>
+            </HBox>
 
-    <!-- This will load the KynningController and its content -->
-    <fx:include fx:id="mediaView" source="media-view.fxml" />
+                      <!-- Event Description -->
+                <Label fx:id="fxDescription" prefWidth="500.0" style="-fx-font-size: 14px;" text="Description">
+               <VBox.margin>
+                  <Insets left="20.0" top="10.0" />
+               </VBox.margin>
+            </Label>
 
-</VBox>
+                <!-- This will load the KynningController and its content -->
+                <fx:include fx:id="mediaView" source="media-view.fxml" />
+            </VBox>
+        </ScrollPane>
+    </content>
+
+</DialogPane>

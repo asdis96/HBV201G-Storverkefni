@@ -8,8 +8,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -21,14 +23,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static hi.event.vidmot.EventManagerApplication.getController;
 
 public class EventManagerController implements Initializable {
     @FXML
@@ -69,7 +70,7 @@ public class EventManagerController implements Initializable {
     private VBox sidebar;
 
     private ObservableList<Event> events = FXCollections.observableArrayList();
-    private NewEvent currentView;  // Currently viewed event form
+    private NewEventController currentView;  // Currently viewed event form
 
     @FXML
     @Override
@@ -133,13 +134,22 @@ public class EventManagerController implements Initializable {
 
     @FXML
     void onNewEvent(ActionEvent event) {
-        // Open NewEvent window (new event creation screen)
-        NewEvent newEventWindow = new NewEvent();
-        Stage newEventStage = new Stage();
-        newEventStage.setTitle("Create New Event");
-        newEventStage.setScene(new Scene(newEventWindow));
-        newEventStage.show();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("new-event.fxml"));
+            Parent root = loader.load(); // Let FXMLLoader create and initialize the controller
+            NewEventController newEventController = loader.getController(); // Get the controller created by FXML
+            newEventController.setController(this); // Pass the EventManagerController if needed
+
+            Stage newEventStage = new Stage();
+            newEventStage.setTitle("Create New Event");
+            newEventStage.setScene(new Scene(root));
+            newEventStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     private void onViewEvent() {
@@ -154,22 +164,29 @@ public class EventManagerController implements Initializable {
 
     @FXML
     void onEditEvent(ActionEvent event) {
-        // Get the selected event from the TableView
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            // Get the current controller and pass it to NewEvent along with the selectedEvent
-            EventManagerController controller = getController();  // Make sure this is the correct way to get the controller
-            NewEvent editEventWindow = new NewEvent(controller, selectedEvent);  // Pass the controller and event
-            Stage editEventStage = new Stage();
-            editEventStage.setTitle("Edit Event");
-            editEventStage.setScene(new Scene(editEventWindow));
-            editEventStage.show();
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("new-event.fxml"));
+                Parent root = loader.load();
+
+                NewEventController newEventController = loader.getController();
+                newEventController.setEditMode(this, selectedEvent);
+
+                Stage editStage = new Stage();
+                editStage.setTitle("Edit Event");
+                editStage.setScene(new Scene(root));
+                editStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
-            // Alert if no event is selected
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to edit.", ButtonType.OK);
             alert.showAndWait();
         }
     }
+
 
     @FXML
     void onDeleteEvent(ActionEvent actionEvent) {
@@ -243,7 +260,7 @@ public class EventManagerController implements Initializable {
 
     /**
      * Switch the view to display the selected event
-     * @param targetView The NewEvent view to be displayed
+     * @param targetView The NewEventController view to be displayed
      */
     private void switchView(Node targetView) {
         for (Node node : fxEventViews.getChildren()) {
@@ -253,14 +270,14 @@ public class EventManagerController implements Initializable {
     }
 
     /**
-     * Finds the NewEvent view associated with a specific event
+     * Finds the NewEventController view associated with a specific event
      * @param event The event to search for
-     * @return The NewEvent view associated with the event
+     * @return The NewEventController view associated with the event
      */
-    private Optional<NewEvent> findViewForEvent(Event event) {
+    private Optional<NewEventController> findViewForEvent(Event event) {
         for (Node node : fxEventViews.getChildren()) {
-            if (((NewEvent) node).getEvent().equals(event)) {
-                return Optional.of((NewEvent) node);
+            if (((NewEventController) node).getEvent().equals(event)) {
+                return Optional.of((NewEventController) node);
             }
         }
         return Optional.empty();

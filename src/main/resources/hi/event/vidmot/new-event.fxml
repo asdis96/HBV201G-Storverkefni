@@ -14,10 +14,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
 
-<HBox prefHeight="606.0" prefWidth="688.0" spacing="17.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.NewEvent">
+<!-- new-event.fxml) -->
+
+<HBox prefHeight="606.0" prefWidth="750.0" spacing="17.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.NewEventController">
+
     <!-- First VBox for form fields (Title, Date, Group, Status, etc.) -->
+
     <VBox prefHeight="606.0" prefWidth="400.0" spacing="10.0" VBox.vgrow="ALWAYS">
-        <HBox prefHeight="57.0" prefWidth="390.0" spacing="20.0">
+        <HBox alignment="CENTER_LEFT" prefHeight="57.0" prefWidth="390.0" spacing="20.0">
             <children>
                 <!-- Title Field -->
                 <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="26.0" prefWidth="70.0" text="Event Title:" />
@@ -29,8 +33,11 @@
 
                 <!-- Event Description TextArea -->
                 <Label prefHeight="26.0" prefWidth="70.0" text="Description:" />
-                <TextArea fx:id="fxDescription" prefHeight="100.0" prefWidth="300.0" promptText="Enter event description" />
+                <TextArea fx:id="fxDescription" prefHeight="100.0" prefWidth="300.0" promptText="Enter event description" wrapText="true" />
             </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
         </HBox>
         <HBox prefHeight="65.0" prefWidth="390.0" spacing="20.0">
             <children>
@@ -53,7 +60,7 @@
 
                 <!-- Event Status ComboBox -->
                 <Label prefHeight="26.0" prefWidth="70.0" text="Status" />
-                <ComboBox fx:id="fxStatus" promptText="Select status" />
+                <ComboBox fx:id="fxStatus" prefWidth="130.0" promptText="Select status" />
             </children>
         </HBox>
         <HBox prefHeight="65.0" prefWidth="390.0" spacing="20.0">
@@ -61,16 +68,19 @@
 
                 <!-- Group ComboBox -->
                 <Label prefHeight="26.0" prefWidth="70.0" text="Group" />
-                <ComboBox fx:id="fxGroup" prefWidth="116.0" promptText="Select group" />
+                <ComboBox fx:id="fxGroup" prefWidth="130.0" promptText="Select group" />
             </children>
         </HBox>
-        <HBox alignment="BOTTOM_CENTER" prefHeight="90.0" prefWidth="390.0" spacing="40.0">
+        <HBox alignment="BOTTOM_CENTER" prefHeight="77.0" prefWidth="390.0" spacing="40.0">
             <children>
 
                 <!-- Save Button -->
                 <Button fx:id="fxSaveButton" onAction="#saveEvent" text="Save Event" />
                 <Button fx:id="fxCancelButton" onAction="#handleCancel" text="Cancel" />
             </children>
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
         </HBox>
         <padding>
             <Insets left="10.0" top="10.0" />
@@ -79,22 +89,19 @@
     <Separator orientation="VERTICAL" prefHeight="200.0" />
 
     <!-- Second VBox for media and image selection -->
-    <VBox prefHeight="606.0" prefWidth="263.0" spacing="10.0" VBox.vgrow="ALWAYS">
-        <HBox prefHeight="61.0" prefWidth="263.0" spacing="20.0">
+    <VBox alignment="TOP_CENTER" prefHeight="606.0" prefWidth="295.0" spacing="10.0" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER" prefHeight="61.0" prefWidth="263.0" spacing="20.0">
             <children>
                 <!-- Image Selection -->
                 <Label text="Select Image" />
                 <Button onAction="#openImage" text="Choose Image" />
             </children>
-            <padding>
-                <Insets left="15.0" />
-            </padding>
         </HBox>
-        <ImageView fx:id="fxImage" fitHeight="150.0" fitWidth="225.0">
+        <ImageView fx:id="fxImage" fitHeight="170.0" fitWidth="250.0">
             <VBox.margin>
-                <Insets left="15.0" />
+                <Insets />
             </VBox.margin></ImageView>
-        <HBox prefHeight="50.0" prefWidth="263.0" spacing="20.0">
+        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="263.0" spacing="20.0">
             <children>
 
                 <!-- Media Selection -->
@@ -102,12 +109,12 @@
                 <Button onAction="#openMedia" text="Choose Media" />
             </children>
             <VBox.margin>
-                <Insets left="15.0" />
+                <Insets />
             </VBox.margin>
         </HBox>
-        <MediaView fx:id="fxMediaView" fitHeight="150.0" fitWidth="225.0">
+        <MediaView fx:id="fxMediaView" fitHeight="170.0" fitWidth="250.0">
             <VBox.margin>
-                <Insets left="15.0" />
+                <Insets />
             </VBox.margin></MediaView>
         <padding>
             <Insets top="10.0" />

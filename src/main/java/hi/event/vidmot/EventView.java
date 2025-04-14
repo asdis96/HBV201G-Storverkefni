@@ -43,9 +43,19 @@ public class EventView extends Dialog<Event> {
 
         // Set size like Event Table
         if (referenceRegion != null) {
-            this.getDialogPane().setPrefWidth(referenceRegion.getWidth());
-            this.getDialogPane().setPrefHeight(referenceRegion.getHeight());
+            this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.8);  // 80% of the reference width
+            this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.8);  // 80% of the reference height
+        } else {
+            // Set default sizes if referenceRegion is null
+            this.getDialogPane().setPrefWidth(580);  // Set a fixed width
+            this.getDialogPane().setPrefHeight(400);  // Set a fixed height
         }
+
+        // Set maximum size for the dialog if needed
+        this.getDialogPane().setMaxWidth(600);  // Max width
+        this.getDialogPane().setMaxHeight(600); // Max height
+
+
 
         this.setTitle("Event Details");
         this.setHeaderText("View Event Information");
@@ -55,7 +65,7 @@ public class EventView extends Dialog<Event> {
     }
 
     private void populateFields() {
-        fxTitle.setText("Title: " + event.getTitle());
+        fxTitle.setText(event.getTitle());
         fxDate.setText("Date: " + event.getDate());
         fxTime.setText("Time: " + event.getTime());
         fxGroup.setText("Group: " + event.getGroup());
@@ -70,20 +80,19 @@ public class EventView extends Dialog<Event> {
         if (event.getVideoMedia() != null) {
             // Load the KynningController FXML and link it with the controller
             FXMLLoader kynningLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
-            KynningController kynningController = new KynningController();  // Create a new controller instance
-            kynningLoader.setController(kynningController);  // Set the controller
 
             try {
-                // Get the VBox from KynningController and add it to the mediaView in EventView
-                VBox kynningVBox = kynningLoader.load();
-                mediaView.getChildren().add(kynningVBox);  // Add KynningController's VBox to EventView
+                // This will automatically load the media-view.fxml and use the controller defined in the FXML
+                kynningLoader.load();
 
                 // Set the media for the video player
+                KynningController kynningController = kynningLoader.getController();
                 kynningController.setMediaPlayer(event.getVideoMedia());
 
             } catch (IOException e) {
                 throw new RuntimeException("Failed to load KynningController FXML", e);
             }
         }
+
     }
 }

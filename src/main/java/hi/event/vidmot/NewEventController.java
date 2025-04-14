@@ -1,22 +1,23 @@
 package hi.event.vidmot;
+
 import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
 import hi.event.vinnsla.Group;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -26,7 +27,7 @@ import java.time.LocalTime;
  *
  *  Lýsing  :
  *****************************************************************************/
-public class NewEvent extends VBox {
+public class NewEventController extends VBox {
 
     @FXML
     private DatePicker fxDate;
@@ -51,49 +52,37 @@ public class NewEvent extends VBox {
     private Button fxCancelButton;
 
     @FXML
-    private TextArea fxDescription; // Added description field
-
-
-    @FXML
-    private FileChooser fxFileChooser;
+    private TextArea fxDescription;
 
     @FXML
     private Button fxSaveButton;
 
     @FXML
+    private FileChooser fxFileChooser = new FileChooser();
+
+
+    @FXML
     private Event event = new Event(false, "", LocalDate.now(), Group.ENTERTAINMENT, EventStatus.ACTIVE, null, null, LocalTime.now(), ""); // New Event by default
 
     private boolean isNewEvent = true;
+
     private EventManagerController controller;
 
-    // Default constructor for creating a new event
-    public NewEvent(EventManagerController controller) {
-        this();
+    public void setEditMode(EventManagerController controller, Event event) {
         this.controller = controller;
-        isNewEvent = true;
-        initialize(); // Initialize for new event
+        this.event = event;
+        this.isNewEvent = false;
+
+        populateFormWithEventDetails(); // Only needed for edit mode
     }
 
-    // Constructor for editing an existing event
-    public NewEvent(EventManagerController controller, Event event) {
-        this(controller); // Call the default constructor
-        this.event = event; // Use the existing event
-        isNewEvent = false; // It's an edited event, not new
-        initialize(); // Initialize for editing the event
+
+    public void setController(EventManagerController controller) {
+        this.controller = controller;
+        this.isNewEvent = true;
+        initialize(); // Manual call because initialize won't auto-fire when controller is loaded via FXML
     }
 
-    // Load the FXML and initialize the view
-    public NewEvent() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("new-event.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-        fxmlLoader.setClassLoader(getClass().getClassLoader());
-        try {
-            fxmlLoader.load(); // Load the FXML file for the layout
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     // Initialize the form with the event details
     public void initialize() {
@@ -142,9 +131,29 @@ public class NewEvent extends VBox {
         fxGroup.setValue(event.getGroup());
         fxDate.setValue(event.getDate());
         fxTime.getValueFactory().setValue(event.getTime().getHour());
+        fxDescription.setText(event.getDescription());
 
         // Set the event status
         fxStatus.getSelectionModel().select(event.getStatus());
+
+        // Set the image for editing (if there is an image)
+        if (event.getImageMedia() != null) {
+            fxImage.setImage(event.getImageMedia());
+        }
+
+        // Set the media for editing (if there is media)
+        if (event.getVideoMedia() != null) {
+            // Create a MediaPlayer from the Media
+            Media media = event.getVideoMedia();
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+            // Set the MediaPlayer to the MediaView
+            fxMediaView.setMediaPlayer(mediaPlayer);
+
+            // Optionally, you can start playing the video
+            mediaPlayer.play();
+        }
+
     }
 
     // Event handler for opening the image file chooser
@@ -154,24 +163,46 @@ public class NewEvent extends VBox {
         if (file != null) {
             Image image = new Image(file.toURI().toString());
             this.event.setImageMedia(image);
+            fxImage.setImage(image);
         } else {
             System.out.println("No image selected");
         }
     }
 
-    // Event handler for opening the media file chooser and setting the media
     @FXML
     void openMedia(ActionEvent event) {
         File file = fxFileChooser.showOpenDialog(null);
         if (file != null) {
-            Media media = new Media(file.toURI().toString());
-            this.event.setVideoMedia(media);
+            try {
+                Media media = new Media(file.toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media); // Create a MediaPlayer
+                fxMediaView.setMediaPlayer(mediaPlayer); // Set the MediaPlayer to the MediaView
+                mediaPlayer.play(); // Optionally, play the video automatically
+                this.event.setVideoMedia(media); // Set the media to the event (for saving)
+            } catch (MediaException e) {
+                // Show an alert if the media format is unsupported
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Unsupported Media Format");
+                alert.setHeaderText("File format not supported");
+                alert.setContentText("The selected file format is not supported. Please select a valid media file (e.g., .mp4).");
+                alert.showAndWait();
+                System.out.println("Error: " + e.getMessage());  // Log the error for debugging
+            } catch (Exception e) {
+                // Handle any other potential exceptions
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("An error occurred while loading the media.");
+                alert.setContentText("Please try again.");
+                alert.showAndWait();
+                System.out.println("Error: " + e.getMessage());  // Log the error for debugging
+            }
         } else {
             System.out.println("No file selected for media");
         }
     }
 
-    // Save the event (either new or edited)
+
+
     @FXML
     void saveEvent(ActionEvent event) {
         if (this.event != null) {
@@ -183,10 +214,21 @@ public class NewEvent extends VBox {
                 controller.updateEvent(this.event);
             }
             System.out.println("Event saved: " + this.event.getTitle());
+
+            // Show a success alert after saving the event
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Event Saved");
+            alert.setHeaderText("Event saved successfully!");
+            alert.setContentText("Your event has been saved.");
+            alert.showAndWait();
+
+            // Close the dialog window
+            closeWindowOnSave();
         } else {
             System.out.println("No event to save.");
         }
     }
+
 
     // Handle the Cancel button click, asking for confirmation to discard changes
     @FXML
@@ -217,11 +259,18 @@ public class NewEvent extends VBox {
         stage.close(); // Close the window and discard changes
     }
 
+    // Close the current window after saving the event
+    private void closeWindowOnSave() {
+        Stage stage = (Stage) fxSaveButton.getScene().getWindow();
+        stage.close(); // Close the window immediately
+    }
+
+
 
     // Helper method to view the component
     @Override
     public String toString() {
-        return "NewEvent{" +
+        return "NewEventController{" +
                 ", fxHeiti=" + fxTitle.getText() +
                 "} " + super.toString();
     }

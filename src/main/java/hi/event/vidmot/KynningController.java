@@ -15,81 +15,62 @@ import javafx.util.Duration;
 
 public class KynningController {
 
-    public Button fxStartButton;
-    public Button fxPlayPause;
-    public Button fxEndButton;
-    public VBox overlay;
+    @FXML private Button fxStartButton;
+    @FXML private Button fxPlayPause;
+    @FXML private Button fxEndButton;
+    @FXML private VBox overlay;
+    @FXML private MediaView fxVideoView;
 
-    @FXML
-    private MediaView fxVideoView;
+    private MediaPlayer mediaPlayer;
 
-    /**
-     * Initialization of controller. Disable buttons if no media is available.
-     */
+    // Initialize the controller and disable buttons if no media is present
     public void initialize() {
         fxStartButton.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> fxVideoView.getMediaPlayer() == null,
+                () -> fxVideoView.mediaPlayerProperty().getValue() == null,
                 fxVideoView.mediaPlayerProperty()
         ));
 
         fxPlayPause.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> fxVideoView.getMediaPlayer() == null,
+                () -> fxVideoView.mediaPlayerProperty().getValue() == null,
                 fxVideoView.mediaPlayerProperty()
         ));
 
         fxEndButton.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> fxVideoView.getMediaPlayer() == null,
+                () -> fxVideoView.mediaPlayerProperty().getValue() == null,
                 fxVideoView.mediaPlayerProperty()
         ));
+
+
     }
 
-    /**
-     * Jump to the start of the media.
-     * @param event not used
-     */
     @FXML
-    void start(ActionEvent event) {
-        MediaPlayer mediaPlayer = getMediaPlayer();
+    private void start(ActionEvent event) {
         if (mediaPlayer != null) {
-            mediaPlayer.seek(Duration.ZERO);
+            mediaPlayer.seek(Duration.ZERO);  // Rewind to start
         }
     }
 
-    /**
-     * Jump to the end of the media.
-     * @param event not used
-     */
     @FXML
-    void end(ActionEvent event) {
-        MediaPlayer mediaPlayer = getMediaPlayer();
+    private void end(ActionEvent event) {
         if (mediaPlayer != null) {
-            mediaPlayer.seek(mediaPlayer.getTotalDuration());
+            mediaPlayer.seek(mediaPlayer.getTotalDuration());  // Jump to the end
         }
     }
 
-    /**
-     * Toggle play/pause.
-     * @param event the play/pause button action
-     */
     @FXML
-    void playPause(ActionEvent event) {
-        MediaPlayer mediaPlayer = getMediaPlayer();
+    private void playPause(ActionEvent event) {
         if (mediaPlayer != null) {
             if (mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
-                mediaPlayer.play();
+                mediaPlayer.play();  // Play the media
             } else {
-                mediaPlayer.pause();
+                mediaPlayer.pause();  // Pause the media
             }
         }
     }
 
-    /**
-     * Set a new MediaPlayer for the media.
-     * @param media the media to play
-     */
+    // Method to set the MediaPlayer and link it to the MediaView
     public void setMediaPlayer(Media media) {
-        // Create a new MediaPlayer for the provided media
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = new MediaPlayer(media);  // Initialize MediaPlayer with media
         mediaPlayer.setOnError(() -> System.out.println("Error in player: " + mediaPlayer.getError().getMessage()));
 
         // Set up media player when ready
@@ -98,46 +79,30 @@ public class KynningController {
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);  // Loop indefinitely
             mediaPlayer.play();  // Start playing
 
-            fxVideoView.setMediaPlayer(mediaPlayer);  // Link MediaPlayer to MediaView
-
-            // Bind play/pause button text to media player status
-            fxPlayPause.textProperty().bind(Bindings.createStringBinding(this::bindPlayPause, mediaPlayer.statusProperty()));
+            fxVideoView.setMediaPlayer(mediaPlayer);  // Link the MediaPlayer to the MediaView
+            fxVideoView.setVisible(true);  // Ensure the MediaView is visible
         });
     }
 
-    /**
-     * Set the event's video when it changes.
-     * @param newEvent the event containing the media
-     */
-    public void setEventView(NewEvent newEvent) {
-        Event event = newEvent.getEvent();
+    // Stop the MediaPlayer when the dialog is closed
+    public void stopMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();   // Stop the playback
+            mediaPlayer.dispose(); // Release resources
+        }
+    }
+
+    // This method updates the event's video media when the event changes
+    public void setEventView(NewEventController newEventController) {
+        Event event = newEventController.getEvent();
         event.videoMediaProperty().addListener((observable, oldValue, newValue) -> {
             setMediaPlayer(newValue);  // Set the media when the event's media changes
         });
     }
 
-    /**
-     * Align the overlay (controls) at the bottom-center.
-     */
+    // Align the overlay (controls) at the bottom-center of the MediaView
     public void setAlignment() {
         StackPane.setAlignment(overlay, Pos.BOTTOM_CENTER);
     }
-
-    /**
-     * Helper method to return the current media player.
-     * @return the media player of the MediaView
-     */
-    private MediaPlayer getMediaPlayer() {
-        return fxVideoView.getMediaPlayer();
-    }
-
-    /**
-     * Bind the text of the play/pause button depending on the media player's status.
-     * @return the text to display on the button
-     */
-    private String bindPlayPause() {
-        MediaPlayer mediaPlayer = fxVideoView.getMediaPlayer();
-        MediaPlayer.Status status = mediaPlayer != null ? mediaPlayer.getStatus() : null;
-        return status == MediaPlayer.Status.PLAYING ? "||" : ">";  // Display play or pause symbol
-    }
 }
+
