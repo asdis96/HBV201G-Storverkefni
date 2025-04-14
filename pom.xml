@@ -34,6 +34,11 @@
             <artifactId>javafx-media</artifactId>
             <version>23.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -46,6 +51,11 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
         </dependency>
     </dependencies>
 
@@ -69,13 +79,22 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>hi.event/hi.event.vidmot.EventManagerApplication</mainClass>
+                            <mainClass>hi.event.vidmot.EventManagerApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                            <options>
+                                <!-- Add JVM options here -->
+                                <option>--module-path</option>
+                                <option>${path.to.javafx.sdk}/lib</option>
+                                <option>--add-modules</option>
+                                <option>javafx.controls,javafx.fxml,javafx.base</option>
+                                <option>--add-opens</option>
+                                <option>javafx.base/javafx.beans.property=ALL-UNNAMED</option>
+                            </options>
                         </configuration>
                     </execution>
                 </executions>

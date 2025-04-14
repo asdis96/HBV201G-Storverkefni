@@ -3,7 +3,7 @@ package hi.event.vidmot;
 
 import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
-import hi.event.vinnsla.Group;
+import hi.event.vinnsla.EventStorage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,22 +16,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class EventManagerController implements Initializable {
+
+    private ObservableList<Event> events = FXCollections.observableArrayList();
+    private EventStorage eventStorage = new EventStorage(); // Assuming EventStorage is a class for storage management
+
     @FXML
     public VBox sidebarContainer;
     @FXML
@@ -66,16 +65,21 @@ public class EventManagerController implements Initializable {
     @FXML
     private Button btnProcessSelected;
 
-    @FXML
-    private VBox sidebar;
+    // Get the list of events (used in NewEventController for saving events)
+    public ObservableList<Event> getEvents() {
+        return events;
+    }
 
-    private ObservableList<Event> events = FXCollections.observableArrayList();
     private NewEventController currentView;  // Currently viewed event form
 
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initializing the columns in the TableView
+        // Load events from storage
+        events = EventStorage.loadEvents();
+        eventTableView.setItems(events);
+
+        // Other initializations (columns, buttons, etc.)
         selectColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
         selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
 
@@ -83,19 +87,6 @@ public class EventManagerController implements Initializable {
         groupColumn.setCellValueFactory(new PropertyValueFactory<>("group"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        // Initialize events in the table (sample data)
-        events = FXCollections.observableArrayList(
-                new Event(true, "Event 1", LocalDate.of(2025, 4, 4), Group.ENTERTAINMENT, EventStatus.ACTIVE,
-                        new Media(Objects.requireNonNull(getClass().getResource("/hi/event/vidmot/media/world fixed.mp4")).toExternalForm()),
-                        new Image(Objects.requireNonNull(getClass().getResource("/hi/event/vidmot/media/monk.jpg")).toExternalForm()),
-                        LocalTime.of(14, 30), "Description 1"),
-                new Event(false, "Event 2", LocalDate.of(2025, 5, 15), Group.FAMILY, EventStatus.INACTIVE,
-                        new Media(Objects.requireNonNull(getClass().getResource("/hi/event/vidmot/media/sample_video.mp4")).toExternalForm()),
-                        new Image(Objects.requireNonNull(getClass().getResource("/hi/event/vidmot/media/cat.jpg")).toExternalForm()),
-                        LocalTime.of(10, 0), "Description 2")
-        );
-        eventTableView.setItems(events);
 
         // Ensure that btnProcessSelected is not null before setting its action
         if (btnProcessSelected != null) {
@@ -107,6 +98,7 @@ public class EventManagerController implements Initializable {
         // Setting selection mode for eventTableView
         eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
+
 
     public void toggleSidebarVisibility() {
         // This method will toggle the visibility of the sidebar
@@ -123,14 +115,14 @@ public class EventManagerController implements Initializable {
         getSelectedEvents();
     }
 
-    // Method to get and print selected events
     public void getSelectedEvents() {
         for (Event event : eventTableView.getItems()) {
-            if (event.getSelected()) {
+            if (event.selectedProperty().get()) {  // Access the selectedProperty() properly
                 System.out.println("Selected event: " + event.getTitle());
             }
         }
     }
+
 
     @FXML
     void onNewEvent(ActionEvent event) {
@@ -190,7 +182,6 @@ public class EventManagerController implements Initializable {
 
     @FXML
     void onDeleteEvent(ActionEvent actionEvent) {
-        // Get the selected event from the TableView
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
             // Ask the user for confirmation before deleting the event
@@ -200,6 +191,7 @@ public class EventManagerController implements Initializable {
                 // Remove the event from the internal list and the TableView
                 events.remove(selectedEvent);
                 eventTableView.setItems(events); // Update the TableView
+                EventStorage.saveEvents(events); // Save the updated events list
             }
         } else {
             // Alert if no event is selected
@@ -207,6 +199,8 @@ public class EventManagerController implements Initializable {
             alert.showAndWait();
         }
     }
+
+
 
     @FXML
     void onChangeStatus(ActionEvent actionEvent) {
@@ -238,25 +232,30 @@ public class EventManagerController implements Initializable {
         currentStage.close(); // Close the current window (logout)
     }
 
+    // Add event to the list
     public void addEvent(Event event) {
         if (event != null) {
-            events.add(event); // Add new event to the list
-            eventTableView.setItems(events); // Update the TableView
+            events.add(event);
+            eventTableView.setItems(events);
+            EventStorage.saveEvents(events); // Save the updated events list
         }
     }
 
+    // Update event in the list
     public void updateEvent(Event updatedEvent) {
         if (updatedEvent != null) {
             for (int i = 0; i < events.size(); i++) {
                 Event existingEvent = events.get(i);
                 if (existingEvent.equals(updatedEvent)) {
-                    events.set(i, updatedEvent); // Replace the old event with the updated one
+                    events.set(i, updatedEvent);
                     eventTableView.setItems(events); // Refresh the TableView
                     break;
                 }
             }
+            EventStorage.saveEvents(events); // Save the updated events list
         }
     }
+
 
     /**
      * Switch the view to display the selected event

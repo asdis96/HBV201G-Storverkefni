@@ -1,5 +1,7 @@
 package hi.event.vidmot;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
 import hi.event.vinnsla.Group;
@@ -18,6 +20,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -203,31 +207,35 @@ public class NewEventController extends VBox {
 
 
 
-    @FXML
-    void saveEvent(ActionEvent event) {
+    public void saveEvent(ActionEvent event) {
         if (this.event != null) {
             if (isNewEvent) {
-                // If it's a new event, add it to the list
-                controller.addEvent(this.event);
+                controller.addEvent(this.event); // Add new event to the list
             } else {
-                // If it's an edited event, update the existing event in the list
-                controller.updateEvent(this.event);
+                controller.updateEvent(this.event); // Update the existing event
             }
-            System.out.println("Event saved: " + this.event.getTitle());
 
-            // Show a success alert after saving the event
+            // Serialize the event and save it to a JSON file
+            Gson gson = new Gson();
+            try (FileWriter writer = new FileWriter("events.json", true)) {
+                JsonElement eventJson = gson.toJsonTree(this.event);
+                writer.write(eventJson.toString() + "\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Show success alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Event Saved");
             alert.setHeaderText("Event saved successfully!");
             alert.setContentText("Your event has been saved.");
             alert.showAndWait();
 
-            // Close the dialog window
+            // Close the window
             closeWindowOnSave();
-        } else {
-            System.out.println("No event to save.");
         }
     }
+
 
 
     // Handle the Cancel button click, asking for confirmation to discard changes

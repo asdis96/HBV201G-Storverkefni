@@ -13,11 +13,10 @@ import java.time.LocalTime;
  *  Nafn    : Ásdís Stefánsdóttir
  *  T-póstur: ahl4@hi.is
  *  Lýsing  : Vinnslu (Model) klasi fyrir viðburði
- *
  *****************************************************************************/
 public class Event {
 
-    private SimpleBooleanProperty selected;
+    public SimpleBooleanProperty selected = new SimpleBooleanProperty(false);
     private SimpleStringProperty title;
     private SimpleObjectProperty<LocalDate> date;
     private SimpleObjectProperty<Group> group;
@@ -41,20 +40,20 @@ public class Event {
         this.description = new SimpleStringProperty(description);
     }
 
-    // Getter and Setter for selected (Boolean)
+    // Getter for 'selected' property (SimpleBooleanProperty)
     public SimpleBooleanProperty selectedProperty() {
         return selected;
     }
 
-    public Boolean getSelected() {
+    public boolean isSelected() {
         return selected.get();
     }
 
-    public void setSelected(Boolean selected) {
+    public void setSelected(boolean selected) {
         this.selected.set(selected);
     }
 
-    // Getter and Setter for title (String)
+    // Getter for 'title' property (SimpleStringProperty)
     public SimpleStringProperty titleProperty() {
         return title;
     }
@@ -67,7 +66,7 @@ public class Event {
         this.title.set(title);
     }
 
-    // Getter and Setter for date (LocalDate)
+    // Getter for 'date' property (SimpleObjectProperty<LocalDate>)
     public SimpleObjectProperty<LocalDate> dateProperty() {
         return date;
     }
@@ -80,7 +79,7 @@ public class Event {
         this.date.set(date);
     }
 
-    // Getter and Setter for group (Group enum)
+    // Getter for 'group' property (SimpleObjectProperty<Group>)
     public SimpleObjectProperty<Group> groupProperty() {
         return group;
     }
@@ -93,7 +92,7 @@ public class Event {
         this.group.set(group);
     }
 
-    // Getter and Setter for status (EventStatus enum)
+    // Getter for 'status' property (SimpleObjectProperty<EventStatus>)
     public SimpleObjectProperty<EventStatus> statusProperty() {
         return status;
     }
@@ -106,7 +105,7 @@ public class Event {
         this.status.set(status);
     }
 
-    // Getter and Setter for video media (Media)
+    // Getter for 'videoMedia' property (SimpleObjectProperty<Media>)
     public SimpleObjectProperty<Media> videoMediaProperty() {
         return videoMedia;
     }
@@ -119,7 +118,7 @@ public class Event {
         this.videoMedia.set(videoMedia);
     }
 
-    // Getter and Setter for image media (Image)
+    // Getter for 'imageMedia' property (SimpleObjectProperty<Image>)
     public SimpleObjectProperty<Image> imageMediaProperty() {
         return imageMedia;
     }
@@ -132,7 +131,7 @@ public class Event {
         this.imageMedia.set(imageMedia);
     }
 
-    // Getter and Setter for time (LocalTime)
+    // Getter for 'time' property (SimpleObjectProperty<LocalTime>)
     public SimpleObjectProperty<LocalTime> timeProperty() {
         return time;
     }
@@ -145,7 +144,7 @@ public class Event {
         this.time.set(time);
     }
 
-    // Getter and Setter for description (String)
+    // Getter for 'description' property (SimpleStringProperty)
     public SimpleStringProperty descriptionProperty() {
         return description;
     }
@@ -157,5 +156,77 @@ public class Event {
     public void setDescription(String description) {
         this.description.set(description);
     }
-}
 
+    // Getters for serialization
+    public boolean getSelectedForSerialization() {
+        return selected.get();
+    }
+
+    public void setSelectedFromSerialization(boolean selected) {
+        this.selected.set(selected);
+    }
+
+    public String getTitleForSerialization() {
+        return title.get();
+    }
+
+    public void setTitleFromSerialization(String title) {
+        this.title.set(title);
+    }
+
+    public LocalDate getDateForSerialization() {
+        return date.get();
+    }
+
+    public void setDateFromSerialization(LocalDate date) {
+        this.date.set(date);
+    }
+
+    public Group getGroupForSerialization() {
+        return group.get();
+    }
+
+    public void setGroupFromSerialization(Group group) {
+        this.group.set(group);
+    }
+
+    public EventStatus getStatusForSerialization() {
+        return status.get();
+    }
+
+    public void setStatusFromSerialization(EventStatus status) {
+        this.status.set(status);
+    }
+
+    public Media getVideoMediaForSerialization() {
+        return videoMedia.get();
+    }
+
+    public void setVideoMediaFromSerialization(Media videoMedia) {
+        this.videoMedia.set(videoMedia);
+    }
+
+    public Image getImageMediaForSerialization() {
+        return imageMedia.get();
+    }
+
+    public void setImageMediaFromSerialization(Image imageMedia) {
+        this.imageMedia.set(imageMedia);
+    }
+
+    public LocalTime getTimeForSerialization() {
+        return time.get();
+    }
+
+    public void setTimeFromSerialization(LocalTime time) {
+        this.time.set(time);
+    }
+
+    public String getDescriptionForSerialization() {
+        return description.get();
+    }
+
+    public void setDescriptionFromSerialization(String description) {
+        this.description.set(description);
+    }
+}
