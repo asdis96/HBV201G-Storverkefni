@@ -12,8 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,19 +38,23 @@ public class EventView extends Dialog<Event> {
     private VBox mediaView;  // The VBox that holds KynningController's content
 
     private Event event;
+    private KynningController kynningController;
 
     public EventView(Event event, Region referenceRegion) {
         this.event = event;
 
-        // Load FXML
+        // Load FXML for EventView
         FXMLLoader loader = new FXMLLoader(getClass().getResource("event-view.fxml"));
-        loader.setController(this);
+        loader.setController(this);  // Set this class as the controller for event-view.fxml
         try {
             DialogPane pane = loader.load();
             this.setDialogPane(pane);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load EventView FXML", e);
         }
+
+        // Now, load the media-view.fxml and let FXML inject the KynningController
+        loadMediaView();
 
         // Set size like Event Table
         if (referenceRegion != null) {
@@ -67,7 +69,6 @@ public class EventView extends Dialog<Event> {
         // Set maximum size for the dialog if needed
         this.getDialogPane().setMaxWidth(600);  // Max width
         this.getDialogPane().setMaxHeight(600); // Max height
-
 
         this.setTitle("Event Details");
         this.setHeaderText("View Event Information");
@@ -115,34 +116,46 @@ public class EventView extends Dialog<Event> {
     }
 
     private void loadVideoMedia() {
-        String videoPath = event.videoMediaPathProperty().getValue();  // Get the relative path for the video
+        String videoPath = event.videoMediaPathProperty().getValue();
         if (videoPath != null && !videoPath.isEmpty()) {
             try {
-                // Access the video using getClass().getResource() for classpath resources
                 URL videoUrl = getClass().getResource(videoPath);
                 if (videoUrl != null) {
-                    // Create the Media object using the URL from the classpath
                     Media videoMedia = new Media(videoUrl.toExternalForm());
 
-                    // Create the MediaPlayer and MediaView
-                    MediaPlayer mediaPlayer = new MediaPlayer(videoMedia);
-                    MediaView mediaViewComponent = new MediaView(mediaPlayer);
-
-                    // Add the MediaView component to the VBox
-                    mediaView.getChildren().add(mediaViewComponent);
-
-                    // Start playing the media
-                    mediaPlayer.play();
+                    // Cast the user data of mediaView to KynningController
+                    if (kynningController != null) {
+                        kynningController.setMediaPlayer(videoMedia);  // Set the media player
+                    } else {
+                        showError("Error: KynningController is not properly injected.");
+                    }
                 } else {
                     showError("Video not found: " + videoPath);
                 }
             } catch (Exception e) {
                 showError("Error loading video: " + e.getMessage());
             }
+        } else {
+            showError("Video path is empty or null.");
+        }
+    }
+
+
+    private void loadMediaView() {
+        // Load the media-view.fxml to get the controller (KynningController)
+        FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
+
+        try {
+            VBox mediaVBox = mediaLoader.load();  // Load the VBox and automatically inject the KynningController
+            kynningController = mediaLoader.getController();  // Retrieve the injected KynningController
+            mediaView.getChildren().setAll(mediaVBox.getChildren());  // Add the loaded children to mediaView
+        } catch (IOException e) {
+            showError("Failed to load media-view.fxml");
         }
     }
 
     private void showError(String message) {
-        System.out.println(message);  // Display error message or handle it in a dialog
+        // Handle error, could be logging or a user dialog
+        System.out.println(message);
     }
 }

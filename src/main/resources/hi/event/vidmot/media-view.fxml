@@ -6,7 +6,7 @@
 <!-- media-view.fxml -->
 
 <VBox fx:id="overlay" StackPane.alignment="BOTTOM_CENTER" alignment="TOP_CENTER" pickOnBounds="false" spacing="10.0"
-      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="hi.event.vidmot.KynningController"
       prefWidth="300"
       VBox.vgrow="ALWAYS">

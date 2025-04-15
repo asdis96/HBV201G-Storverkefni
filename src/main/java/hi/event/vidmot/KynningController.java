@@ -15,7 +15,8 @@ import javafx.util.Duration;
 
 public class KynningController {
 
-    @FXML private Button fxStartButton;
+    @FXML
+    private Button fxStartButton;
     @FXML private Button fxPlayPause;
     @FXML private Button fxEndButton;
     @FXML private VBox overlay;
@@ -25,69 +26,79 @@ public class KynningController {
 
     // Initialize the controller and disable buttons if no media is present
     public void initialize() {
+        // Disable the buttons if no media is set
         fxStartButton.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> fxVideoView.mediaPlayerProperty().getValue() == null,
+                () -> mediaPlayer == null,
                 fxVideoView.mediaPlayerProperty()
         ));
 
         fxPlayPause.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> fxVideoView.mediaPlayerProperty().getValue() == null,
+                () -> mediaPlayer == null,
                 fxVideoView.mediaPlayerProperty()
         ));
 
         fxEndButton.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> fxVideoView.mediaPlayerProperty().getValue() == null,
+                () -> mediaPlayer == null,
                 fxVideoView.mediaPlayerProperty()
         ));
 
-
+        // Set up the play/pause button action
+        fxPlayPause.setOnAction(this::playPause);
+        fxStartButton.setOnAction(this::start);
+        fxEndButton.setOnAction(this::end);
     }
 
+    // Start the video from the beginning (rewind)
     @FXML
     private void start(ActionEvent event) {
         if (mediaPlayer != null) {
             mediaPlayer.seek(Duration.ZERO);  // Rewind to start
+            mediaPlayer.play();  // Start playing after rewinding
         }
     }
 
+    // Jump to the end of the video
     @FXML
     private void end(ActionEvent event) {
         if (mediaPlayer != null) {
             mediaPlayer.seek(mediaPlayer.getTotalDuration());  // Jump to the end
+            mediaPlayer.pause();  // Pause at the end of the video
         }
     }
 
+    // Play or pause the video based on the current state
     @FXML
     private void playPause(ActionEvent event) {
         if (mediaPlayer != null) {
-            if (mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
+            if (mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED || mediaPlayer.getStatus() == MediaPlayer.Status.READY) {
                 mediaPlayer.play();  // Play the media
-            } else {
+                fxPlayPause.setText("Pause");  // Update button text
+            } else if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
                 mediaPlayer.pause();  // Pause the media
+                fxPlayPause.setText("Play");  // Update button text
             }
         }
     }
 
-    // Method to set the MediaPlayer and link it to the MediaView
+    // Set the MediaPlayer and link it to the MediaView
     public void setMediaPlayer(Media media) {
-        mediaPlayer = new MediaPlayer(media);  // Initialize MediaPlayer with media
+        // Create a new MediaPlayer
+        mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnError(() -> System.out.println("Error in player: " + mediaPlayer.getError().getMessage()));
 
         // Set up media player when ready
         mediaPlayer.setOnReady(() -> {
-            mediaPlayer.seek(Duration.ZERO);  // Start from the beginning
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);  // Loop indefinitely
-            mediaPlayer.play();  // Start playing
-
             fxVideoView.setMediaPlayer(mediaPlayer);  // Link the MediaPlayer to the MediaView
             fxVideoView.setVisible(true);  // Ensure the MediaView is visible
+            mediaPlayer.play();  // Start playing the video
         });
     }
 
-    // Stop the MediaPlayer when the dialog is closed
+    // Stop the MediaPlayer when the dialog is closed or when done
     public void stopMediaPlayer() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();   // Stop the playback
+            mediaPlayer.stop();  // Stop the playback
             mediaPlayer.dispose(); // Release resources
         }
     }
@@ -105,4 +116,3 @@ public class KynningController {
         StackPane.setAlignment(overlay, Pos.BOTTOM_CENTER);
     }
 }
-
