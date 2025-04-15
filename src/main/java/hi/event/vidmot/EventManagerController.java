@@ -60,6 +60,10 @@ public class EventManagerController implements Initializable {
     @FXML
     private TableColumn<Event, String> statusColumn;
 
+    @FXML
+    private TextField searchField;  // Search bar TextField
+
+
     // Instance variables to store events and handle storage
     private List<Event> events = new ArrayList<>();  // List to store all events
     private EventStorage eventStorage = new EventStorage();  // EventStorage instance to handle saving/loading
@@ -93,6 +97,11 @@ public class EventManagerController implements Initializable {
 
         // Setting selection mode for eventTableView
         eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        // Add listener to the search bar
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterTable(newValue);
+        });
     }
 
     private void loadEventsFromStorage() {
@@ -123,6 +132,21 @@ public class EventManagerController implements Initializable {
         fxDeleteEvent.setDisable(false);
         fxChangeStatus.setDisable(false);
     }
+
+    private void filterTable(String searchQuery) {
+        ObservableList<Event> filteredList = FXCollections.observableArrayList();
+
+        for (Event event : observableEvents) {
+            // Check if the event title matches the search query (case-insensitive)
+            if (event.getTitleValue().toLowerCase().contains(searchQuery.toLowerCase())) {
+                filteredList.add(event);
+            }
+        }
+
+        // Update the TableView with the filtered list
+        eventTableView.setItems(filteredList);
+    }
+
 
 
 

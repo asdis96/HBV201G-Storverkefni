@@ -16,10 +16,62 @@
     -fx-text-fill: black;
 }
 
+/* General style for all sidebar buttons */
 .sidebarbuttons Button {
-    -fx-background-color: transparent;
-    -fx-font-size: 14px;
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-font-size: 14px;               /* Font size */
+    -fx-font-weight: normal;           /* Normal font weight */
+    -fx-text-fill: black;              /* Default text color */
+    -fx-border-width: 0;               /* No border */
+    -fx-padding: 10px 20px;            /* Padding around the text */
+    -fx-alignment: CENTER;             /* Center align the text */
 }
+
+/* Hover effect for sidebar buttons */
+.sidebarbuttons Button:hover {
+    -fx-text-fill: #B0B0B0; /* Light grey text when hovered */
+    -fx-cursor: hand;        /* Change cursor to hand when hovered */
+}
+
+/* Pressed effect for sidebar buttons */
+.sidebarbuttons Button:pressed {
+    -fx-font-weight: bold; /* Make the font bold when pressed */
+}
+
+/* Focused effect for sidebar buttons */
+.sidebarbuttons Button:focused {
+    -fx-font-weight: bold; /* Make the font bold when focused */
+    -fx-text-fill: #B0B0B0; /* Light grey text when focused */
+}
+
+/* Add specific styles for each button (if needed) to make them consistent */
+
+/* Sidebar button specific: New Event */
+#fxNewEvent {
+    -fx-text-fill: #000; /* Ensure text color is consistent */
+}
+
+/* Sidebar button specific: View Event */
+#fxViewEvent {
+    -fx-text-fill: #000; /* Ensure text color is consistent */
+}
+
+/* Sidebar button specific: Edit Event */
+#fxEditEvent {
+    -fx-text-fill: #000; /* Ensure text color is consistent */
+}
+
+/* Sidebar button specific: Delete Event */
+#fxDeleteEvent {
+    -fx-text-fill: #000; /* Ensure text color is consistent */
+}
+
+/* Sidebar button specific: Change Status */
+#fxChangeStatus {
+    -fx-text-fill: #000; /* Ensure text color is consistent */
+}
+
+
 
 .label, .button, .text-field, .menu-item, .combo-box{
    -fx-font-size: 14px;

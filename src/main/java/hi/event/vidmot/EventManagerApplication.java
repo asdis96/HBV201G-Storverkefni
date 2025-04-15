@@ -16,7 +16,7 @@ public class EventManagerApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(EventManagerApplication
                 .class.getResource("/hi/event/vidmot/eventmanager-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+        Scene scene = new Scene(fxmlLoader.load(), 900, 700);
         EventManagerApplication.setController (fxmlLoader.getController());
         stage.setTitle("Viðburðastjóri");
         stage.setScene(scene);

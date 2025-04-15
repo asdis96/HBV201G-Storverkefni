@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <!-- eventmanager-view.fxml -->
-<BorderPane fx:id="root" stylesheets="@eventmanager.css" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="root" prefHeight="700.0" prefWidth="900.0" stylesheets="@eventmanager.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
     <!-- Top section (Menu) -->
     <top>
         <fx:include source="menu-view.fxml" />
+
     </top>
 
     <!-- Left section (Sidebar) -->
     <left>
-        <VBox fx:id="sidebarContainer" prefWidth="250.0" spacing="10.0" stylesheets="@eventmanager.css">
+        <VBox fx:id="sidebarContainer" prefWidth="200.0" spacing="10.0" stylesheets="@eventmanager.css">
             <!-- Title or Header if needed -->
             <HBox alignment="CENTER">
                 <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="2.0" prefHeight="29.0" prefWidth="209.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Event Manager">
@@ -53,15 +62,30 @@
                         <Font size="14.0" />
                     </font>
                 </Button>
+            <padding>
+               <Insets top="10.0" />
+            </padding>
             </VBox>
+         <BorderPane.margin>
+            <Insets bottom="20.0" top="10.0" />
+         </BorderPane.margin>
         </VBox>
     </left>
 
     <!-- Center section (Main Content with TableView) -->
+    <!-- Center section (Main Content with TableView) -->
+    <!-- Center section (Main Content with TableView) -->
     <center>
-        <StackPane fx:id="fxEventViews" prefHeight="450.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-            <TableView fx:id="eventTableView" layoutX="20" layoutY="20" prefHeight="400" prefWidth="579.0">
-                <!-- Select Column -->
+        <!-- VBox to stack the search bar and table -->
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <!-- Search Bar -->
+            <HBox alignment="TOP_RIGHT" spacing="10">
+                <TextField fx:id="searchField" prefHeight="27.0" prefWidth="260.0" promptText="Search by title" />
+            </HBox>
+
+            <!-- TableView -->
+            <TableView fx:id="eventTableView" layoutX="20" layoutY="20" prefHeight="619.0" prefWidth="680.0">
+                <!-- Table Columns go here -->
                 <columns>
                     <TableColumn fx:id="selectColumn" prefWidth="38.0">
                         <cellValueFactory>
@@ -69,28 +93,24 @@
                         </cellValueFactory>
                     </TableColumn>
 
-                    <!-- Title Column -->
                     <TableColumn fx:id="titleColumn" prefWidth="236.0" text="Title">
                         <cellValueFactory>
                             <PropertyValueFactory property="title" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <!-- Date Column -->
                     <TableColumn fx:id="dateColumn" prefWidth="105.0" text="Date">
                         <cellValueFactory>
                             <PropertyValueFactory property="date" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <!-- Group Column -->
                     <TableColumn fx:id="groupColumn" prefWidth="111.0" text="Group">
                         <cellValueFactory>
                             <PropertyValueFactory property="group" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <!-- Status Column -->
                     <TableColumn fx:id="statusColumn" prefWidth="68.0" text="Status">
                         <cellValueFactory>
                             <PropertyValueFactory property="status" />
@@ -98,6 +118,6 @@
                     </TableColumn>
                 </columns>
             </TableView>
-        </StackPane>
+        </VBox>
     </center>
 </BorderPane>

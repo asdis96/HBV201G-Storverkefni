@@ -58,20 +58,19 @@ public class EventView extends Dialog<Event> {
 
         // Set size like Event Table
         if (referenceRegion != null) {
-            this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.8);  // 80% of the reference width
-            this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.8);  // 80% of the reference height
+            this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.9);  // 80% of the reference width
+            this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.9);  // 80% of the reference height
         } else {
             // Set default sizes if referenceRegion is null
-            this.getDialogPane().setPrefWidth(580);  // Set a fixed width
-            this.getDialogPane().setPrefHeight(400);  // Set a fixed height
+            this.getDialogPane().setPrefWidth(690);  // Set a fixed width
+            this.getDialogPane().setPrefHeight(640);  // Set a fixed height
         }
 
         // Set maximum size for the dialog if needed
-        this.getDialogPane().setMaxWidth(600);  // Max width
-        this.getDialogPane().setMaxHeight(600); // Max height
+        this.getDialogPane().setMaxWidth(700);  // Max width
+        this.getDialogPane().setMaxHeight(650); // Max height
 
         this.setTitle("Event Details");
-        this.setHeaderText("View Event Information");
         this.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
         populateFields();
