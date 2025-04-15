@@ -1,6 +1,5 @@
 package hi.event.vidmot;
 
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,35 +13,58 @@ public class EventManagerApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(EventManagerApplication
-                .class.getResource("/hi/event/vidmot/eventmanager-view.fxml"));
+        // Load the login view first
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
-        EventManagerApplication.setController (fxmlLoader.getController());
-        stage.setTitle("Viðburðastjóri");
+
+        // Set the application reference (if needed)
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setApplication(this);
+
+        // Show login screen
+        stage.setTitle("Login - Event Manager");
         stage.setScene(scene);
         stage.show();
-
     }
 
     /**
-     * setja static breytu controller
-     * @param controller aðal controllerinn
+     * Switch to the EventManager view after a successful login
+     */
+    public void switchToEventManager() throws IOException {
+        // Load the EventManager view (main screen)
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/eventmanager-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 900, 700);
+
+        // Get the EventManagerController
+        EventManagerController eventManagerController = fxmlLoader.getController();
+
+        // Set the controller using the setter
+        setController(eventManagerController);
+
+        // Now switch to the EventManager view
+        Stage stage = new Stage();
+        stage.setTitle("Event Manager");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+    /**
+     * Set the static controller variable (this is called after login)
      */
     static private void setController(EventManagerController controller) {
         EventManagerApplication.controller = controller;
     }
 
     /**
-     * Skilar controller fyrir EventManager úr static breytu
-     * @return controller fyrir EventManager
+     * Get the controller for the EventManager
      */
     public static EventManagerController getController() {
         return controller;
     }
 
     /**
-     * Ræsir forritið
-     * @param args ónotað
+     * Main method to launch the application
      */
     public static void main(String[] args) {
         launch();

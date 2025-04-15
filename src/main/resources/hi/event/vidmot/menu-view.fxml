@@ -6,18 +6,14 @@
 
 <MenuBar xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.MenuController">
     <menus>
-        <Menu mnemonicParsing="false" text="Account">
-            <items>
-                <MenuItem mnemonicParsing="false" onAction="#onAccount" text="View Account" />
-                <MenuItem mnemonicParsing="false" text="Account Settings" />
-            </items>
-        </Menu>
         <Menu mnemonicParsing="false" text="File">
             <items>
+                <MenuItem mnemonicParsing="false" onAction="#onAccount" text="View Account" />
+                <MenuItem text="Logout" onAction="#onLogout"/>
                 <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
             </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Display">
+        <Menu mnemonicParsing="false" text="View">
             <items>
                 <RadioMenuItem fx:id="fxSvartur" mnemonicParsing="false" onAction="#onSetColor" selected="false" text="Svartur">
                     <toggleGroup>

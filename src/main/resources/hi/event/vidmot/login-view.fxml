@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- login-view.fxml -->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="193.0" prefWidth="362.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.LoginController">
+    <center>
+        <VBox>
+            <Text text="Login" />
+
+            <!-- Username Field -->
+            <TextField fx:id="usernameField" promptText="Username" />
+
+            <!-- Password Field -->
+            <PasswordField fx:id="passwordField" promptText="Password" />
+
+            <!-- Sign Up Link -->
+            <Hyperlink fx:id="signUpLink" onAction="#onSignUpLinkClicked" text="Don't have an account? Sign Up!" />
+
+            <!-- Login Button -->
+            <Button fx:id="loginButton" onAction="#onLoginButtonClicked" text="Log In" />
+        </VBox>
+    </center>
+</BorderPane>

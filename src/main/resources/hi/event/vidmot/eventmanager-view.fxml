@@ -72,9 +72,6 @@
         </VBox>
     </left>
 
-    <!-- Center section (Main Content with TableView) -->
-    <!-- Center section (Main Content with TableView) -->
-    <!-- Center section (Main Content with TableView) -->
     <center>
         <!-- VBox to stack the search bar and table -->
         <VBox spacing="10" style="-fx-padding: 10;">

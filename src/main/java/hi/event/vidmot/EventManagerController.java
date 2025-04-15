@@ -4,6 +4,7 @@ package hi.event.vidmot;
 import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
 import hi.event.vinnsla.EventStorage;
+import hi.event.vinnsla.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,8 +45,6 @@ public class EventManagerController implements Initializable {
     @FXML
     private Button fxChangeStatus;
     @FXML
-    private Button fxLogout;
-    @FXML
     private StackPane fxEventViews;
     @FXML
     private TableView<Event> eventTableView;
@@ -73,6 +72,13 @@ public class EventManagerController implements Initializable {
 
     private ObservableList<Event> observableEvents = FXCollections.observableArrayList();
     private NewEventController currentView;  // Currently viewed event form
+
+    private User currentUser;
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        // You can now use currentUser to display user's name or manage user-specific events
+    }
 
     @FXML
     @Override
@@ -146,8 +152,6 @@ public class EventManagerController implements Initializable {
         // Update the TableView with the filtered list
         eventTableView.setItems(filteredList);
     }
-
-
 
 
     // This method will be called when the button is clicked to process selected events
@@ -273,8 +277,6 @@ public class EventManagerController implements Initializable {
     }
 
 
-
-
     public void saveEventsToStorage() {
         try {
             // Convert JavaFX properties to plain values before saving
@@ -289,20 +291,6 @@ public class EventManagerController implements Initializable {
             alert.showAndWait();
         }
     }
-
-
-
-
-    // Logout and save events
-    @FXML
-    public void onLogout(ActionEvent actionEvent) {
-        // Handle logout
-        saveEventsToStorage();
-        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        currentStage.close();
-    }
-
-
 
     public void addEvent(Event event) {
         if (event != null) {
@@ -337,9 +325,6 @@ public class EventManagerController implements Initializable {
     }
 
 
-
-
-
     /**
      * Switch the view to display the selected event
      * @param targetView The NewEventController view to be displayed
@@ -364,8 +349,6 @@ public class EventManagerController implements Initializable {
         }
         return Optional.empty();
     }
-
-
 
 
     /**

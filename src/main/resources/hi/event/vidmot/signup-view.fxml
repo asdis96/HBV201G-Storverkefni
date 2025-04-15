@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- signup-view.fxml -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.SignUpController">
+    <center>
+        <VBox  >
+            <Text text="Sign Up" />
+
+            <!-- Name Field -->
+            <TextField fx:id="nameField" promptText="Full Name" prefWidth="250" />
+
+            <!-- Email Field -->
+            <TextField fx:id="emailField" promptText="Email" prefWidth="250" />
+
+            <!-- Username Field -->
+            <TextField fx:id="usernameField" promptText="Username" prefWidth="250" />
+
+            <!-- Password Field -->
+            <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250" />
+
+            <!-- Sign Up Button -->
+            <Button fx:id="signUpButton" text="Sign Up" onAction="#onSignUpButtonClicked" prefWidth="250" />
+        </VBox>
+    </center>
+</BorderPane>
