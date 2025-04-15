@@ -23,6 +23,7 @@ public class MenuController {
      */
     @FXML
     void onExit(ActionEvent event) {
+        getEventManagerController().saveEventsToStorage();
         Platform.exit();
     }
 

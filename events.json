@@ -1,13 +1,21 @@
-[
-  {
-    "date": "2025-04-15",
-    "description": "ssdd",
-    "videoMediaPath": "hi/event/vidmot/media/world_fixed.mp4",
-    "time": "12:00",
-    "title": "ss",
-    "imageMediaPath": "hi/event/vidmot/media/cat.JPG",
-    "selected": false,
-    "group": "Entertainment",
-    "status": "Active"
-  }
-]
+[ {
+  "selectedValue" : false,
+  "titleValue" : "mn kn",
+  "dateValue" : "2025-04-15",
+  "groupValue" : "Entertainment",
+  "statusValue" : "Inactive",
+  "videoMediaPathValue" : "/hi/event/vidmot/media/world_fixed.mp4",
+  "imageMediaPathValue" : "/hi/event/vidmot/media/monk.JPG",
+  "timeValue" : "12:00:00",
+  "descriptionValue" : "lknlnln"
+}, {
+  "selectedValue" : false,
+  "titleValue" : "Monk MARATHON",
+  "dateValue" : "2025-04-18",
+  "groupValue" : "Entertainment",
+  "statusValue" : "Active",
+  "videoMediaPathValue" : "/hi/event/vidmot/media/world_fixed.mp4",
+  "imageMediaPathValue" : "/hi/event/vidmot/media/monk.JPG",
+  "timeValue" : "20:00:00",
+  "descriptionValue" : "The best annual event is here !! 8 seasons you don't want to miss this!"
+} ]

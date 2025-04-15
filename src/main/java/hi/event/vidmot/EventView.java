@@ -7,24 +7,37 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class EventView extends Dialog<Event> {
 
-    @FXML private Label fxTitle;
-    @FXML private Label fxDate;
-    @FXML private Label fxTime;
-    @FXML private Label fxGroup;
-    @FXML private Label fxStatus;
-    @FXML private Label fxDescription;
-    @FXML private ImageView fxImage;
+    @FXML
+    private Label fxTitle;
+    @FXML
+    private Label fxDate;
+    @FXML
+    private Label fxTime;
+    @FXML
+    private Label fxGroup;
+    @FXML
+    private Label fxStatus;
+    @FXML
+    private Label fxDescription;
+    @FXML
+    private ImageView fxImage;
 
     // This will hold the MediaView and controls from KynningController
-    @FXML private VBox mediaView;  // The VBox that holds KynningController's content
+    @FXML
+    private VBox mediaView;  // The VBox that holds KynningController's content
 
     private Event event;
 
@@ -56,7 +69,6 @@ public class EventView extends Dialog<Event> {
         this.getDialogPane().setMaxHeight(600); // Max height
 
 
-
         this.setTitle("Event Details");
         this.setHeaderText("View Event Information");
         this.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -65,34 +77,72 @@ public class EventView extends Dialog<Event> {
     }
 
     private void populateFields() {
-        fxTitle.setText(event.getTitle());
-        fxDate.setText("Date: " + event.getDate());
-        fxTime.setText("Time: " + event.getTime());
-        fxGroup.setText("Group: " + event.getGroup());
-        fxStatus.setText("Status: " + event.getStatus());
-        fxDescription.setText("Description: " + event.getDescription());
+        // Set title and description
+        fxTitle.setText(event.titleProperty().getValue());
+        fxDescription.setText("Description: " + event.descriptionProperty().getValue());
 
-        if (event.getImageMedia() != null) {
-            fxImage.setImage(event.getImageMedia());
-        }
+        // Use the formatted date and time values for fxDate and fxTime
+        fxDate.setText("Date: " + event.getFormattedDateForFXML());
+        fxTime.setText("Time: " + event.getTimeValue().toString());  // You can also format the time if needed
 
-        // Set up video playback if media exists
-        if (event.getVideoMedia() != null) {
-            // Load the KynningController FXML and link it with the controller
-            FXMLLoader kynningLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
+        // Set group and status
+        fxGroup.setText("Group: " + event.groupProperty().getValue());
+        fxStatus.setText("Status: " + event.statusProperty().getValue());
 
+        // Load the image using the loadImageMedia() method from Event class
+        loadImageMedia();  // This will load the image based on the imageMediaPath
+        loadVideoMedia();  // This will load the video based on the videoMediaPath
+    }
+
+    private void loadImageMedia() {
+        String imagePath = event.imageMediaPathProperty().getValue();  // Get the relative path for the image
+        if (imagePath != null && !imagePath.isEmpty()) {
             try {
-                // This will automatically load the media-view.fxml and use the controller defined in the FXML
-                kynningLoader.load();
-
-                // Set the media for the video player
-                KynningController kynningController = kynningLoader.getController();
-                kynningController.setMediaPlayer(event.getVideoMedia());
-
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load KynningController FXML", e);
+                // Access the image using getClass().getResource() for classpath resources
+                URL imageUrl = getClass().getResource(imagePath);
+                if (imageUrl != null) {
+                    // Create the Image object using the URL from the classpath
+                    Image image = new Image(imageUrl.toExternalForm());
+                    fxImage.setImage(image);  // Set the image to the UI element
+                    event.imageMediaProperty().set(image);  // Set JavaFX property value
+                } else {
+                    showError("Image not found: " + imagePath);
+                }
+            } catch (Exception e) {
+                showError("Error loading image: " + e.getMessage());
             }
         }
+    }
 
+    private void loadVideoMedia() {
+        String videoPath = event.videoMediaPathProperty().getValue();  // Get the relative path for the video
+        if (videoPath != null && !videoPath.isEmpty()) {
+            try {
+                // Access the video using getClass().getResource() for classpath resources
+                URL videoUrl = getClass().getResource(videoPath);
+                if (videoUrl != null) {
+                    // Create the Media object using the URL from the classpath
+                    Media videoMedia = new Media(videoUrl.toExternalForm());
+
+                    // Create the MediaPlayer and MediaView
+                    MediaPlayer mediaPlayer = new MediaPlayer(videoMedia);
+                    MediaView mediaViewComponent = new MediaView(mediaPlayer);
+
+                    // Add the MediaView component to the VBox
+                    mediaView.getChildren().add(mediaViewComponent);
+
+                    // Start playing the media
+                    mediaPlayer.play();
+                } else {
+                    showError("Video not found: " + videoPath);
+                }
+            } catch (Exception e) {
+                showError("Error loading video: " + e.getMessage());
+            }
+        }
+    }
+
+    private void showError(String message) {
+        System.out.println(message);  // Display error message or handle it in a dialog
     }
 }

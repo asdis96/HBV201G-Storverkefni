@@ -95,12 +95,20 @@ public class EventManagerController implements Initializable {
         eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
-    // Method to load events from storage
     private void loadEventsFromStorage() {
         try {
-            events = EventStorage.loadEvents();
-            observableEvents = FXCollections.observableArrayList(events);
-            eventTableView.setItems(observableEvents);
+            // Load events from storage
+            events = EventStorage.loadEvents();  // Assuming loadEvents returns a List<Event>
+            if (events != null) {
+                // Populate the observable list
+                observableEvents = FXCollections.observableArrayList(events);
+                // Ensure the JavaFX properties are populated from plain values
+                for (Event event : observableEvents) {
+                    event.populateFromPlainValues();  // Populate JavaFX properties from plain values
+                }
+                // Bind the observable list to the TableView
+                eventTableView.setItems(observableEvents);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to load events from file.", ButtonType.OK);
@@ -109,14 +117,13 @@ public class EventManagerController implements Initializable {
     }
 
 
-    public void toggleSidebarVisibility() {
-        // This method will toggle the visibility of the sidebar
-        if (sidebarContainer.isVisible()) {
-            sidebarContainer.setVisible(false);
-        } else {
-            sidebarContainer.setVisible(true);
-        }
+    public void enableButtons() {
+        fxNewEvent.setDisable(false);
+        fxEditEvent.setDisable(false);
+        fxDeleteEvent.setDisable(false);
+        fxChangeStatus.setDisable(false);
     }
+
 
 
     // This method will be called when the button is clicked to process selected events
@@ -127,11 +134,12 @@ public class EventManagerController implements Initializable {
     // Method to get and print selected events
     public void getSelectedEvents() {
         for (Event event : eventTableView.getItems()) {
-            if (event.getSelected()) {
-                System.out.println("Selected event: " + event.getTitle());
+            if (event.selectedProperty().get()) {  // Use the JavaFX property to get the selected state
+                System.out.println("Selected event: " + event.titleProperty().get());  // Access title through JavaFX property
             }
         }
     }
+
 
     @FXML
     void onNewEvent(ActionEvent event) {
@@ -191,33 +199,28 @@ public class EventManagerController implements Initializable {
 
     @FXML
     void onDeleteEvent(ActionEvent actionEvent) {
-        // Get the selected event from the TableView
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            // Ask the user for confirmation before deleting the event
+            // Confirmation before deletion
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this event?", ButtonType.YES, ButtonType.NO);
             Optional<ButtonType> result = confirmationAlert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.YES) {
-                // Remove the event from the internal list and the TableView
-                events.remove(selectedEvent);  // Remove from the internal events list
-                observableEvents.remove(selectedEvent);  // Remove from ObservableList, which is bound to the TableView
-                eventTableView.setItems(observableEvents);  // Update the TableView
+                // Remove the event from both the internal list and the observable list
+                events.remove(selectedEvent);
+                observableEvents.remove(selectedEvent);
 
-                // Save the updated events to the file after deletion
-                try {
-                    eventStorage.saveEvents(events);  // Save the updated events list to storage
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to save the updated events.", ButtonType.OK);
-                    alert.showAndWait();
-                }
+                // Rebind the observable list to the table view
+                eventTableView.setItems(observableEvents);
+
+                // Save the updated list of events to storage
+                saveEventsToStorage();
             }
         } else {
-            // Alert if no event is selected
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to delete.", ButtonType.OK);
             alert.showAndWait();
         }
     }
+
 
 
 
@@ -226,32 +229,35 @@ public class EventManagerController implements Initializable {
         // Get the selected event from the TableView
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
+            // Access the current status using the JavaFX property
+            EventStatus currentStatus = selectedEvent.statusProperty().get();
             // Toggle status between ACTIVE and INACTIVE
-            EventStatus currentStatus = selectedEvent.getStatus();
             EventStatus newStatus = (currentStatus == EventStatus.ACTIVE) ? EventStatus.INACTIVE : EventStatus.ACTIVE;
-            selectedEvent.setStatus(newStatus);
+            // Update the status using JavaFX property and plain value
+            selectedEvent.statusProperty().set(newStatus);
+            selectedEvent.setStatusValue(newStatus);  // Update the plain value
 
-            // Update the table view to reflect the status change
+            // Refresh the table view to reflect the status change
             eventTableView.refresh();
 
-            // Save the updated events to the file after status change
-            try {
-                EventStorage.saveEvents(events);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to save the updated events.", ButtonType.OK);
-                alert.showAndWait();
-            }
+            // Save the updated events to storage
+            saveEventsToStorage();
         } else {
-            // Alert if no event is selected
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to change its status.", ButtonType.OK);
             alert.showAndWait();
         }
     }
 
-    // Save events back to storage
-    private void saveEventsToStorage() {
+
+
+
+    public void saveEventsToStorage() {
         try {
+            // Convert JavaFX properties to plain values before saving
+            for (Event event : events) {
+                event.extractToPlainValues();  // Extract to plain values for serialization
+            }
+            // Save the list of events to storage
             EventStorage.saveEvents(events);
         } catch (IOException e) {
             e.printStackTrace();
@@ -261,51 +267,53 @@ public class EventManagerController implements Initializable {
     }
 
 
+
+
     // Logout and save events
     @FXML
     public void onLogout(ActionEvent actionEvent) {
-        Alert logoutAlert = new Alert(Alert.AlertType.INFORMATION, "You have successfully logged out.", ButtonType.OK);
-        logoutAlert.showAndWait();
-
-        // Save events before logout
+        // Handle logout
         saveEventsToStorage();
-
-        // Close the current stage
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         currentStage.close();
     }
 
 
 
-    // Add new event to the table
     public void addEvent(Event event) {
         if (event != null) {
+            // Add the event to both internal lists
             events.add(event);
             observableEvents.add(event);
-            eventTableView.setItems(observableEvents);
 
-            // Save events after adding
+            // Rebind the TableView with the updated list
+            eventTableView.setItems(observableEvents);  // Update TableView with new event
+
+            // Save the events list after adding
             saveEventsToStorage();
         }
     }
 
-    // Update an existing event in the table
     public void updateEvent(Event updatedEvent) {
         if (updatedEvent != null) {
             for (int i = 0; i < events.size(); i++) {
                 Event existingEvent = events.get(i);
                 if (existingEvent.equals(updatedEvent)) {
+                    // Update internal lists with the updated event
                     events.set(i, updatedEvent);
                     observableEvents.set(i, updatedEvent);
-                    eventTableView.setItems(observableEvents);
+                    eventTableView.setItems(observableEvents);  // Rebind TableView
 
-                    // Save events after update
+                    // Save the updated events to storage
                     saveEventsToStorage();
                     break;
                 }
             }
         }
     }
+
+
+
 
 
     /**
