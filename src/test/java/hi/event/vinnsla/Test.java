@@ -30,9 +30,6 @@ public class Test {
             URL imageURL = Test.class.getClassLoader().getResource(event.getImageMediaPathValue());
             System.out.println("Image file found: " + (imageURL != null ? imageURL.getPath() : "File not found"));
 
-            // Print time in both raw and formatted format
-            System.out.println("Event time (raw): " + event.getTimeValue());
-            System.out.println("Event time (formatted): " + event.getFormattedTimeForJson());
 
             // Print absolute paths of video and image
             System.out.println("Absolute path of video: " + new File(event.getVideoMediaPathValue()).getAbsolutePath());

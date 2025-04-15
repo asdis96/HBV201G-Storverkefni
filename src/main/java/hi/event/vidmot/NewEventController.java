@@ -151,13 +151,17 @@ public class NewEventController extends VBox {
         // Bind the status ComboBox using the statusProperty()
         fxStatus.getSelectionModel().select(event.statusProperty().get());
 
-        // Set the media image and video if they exist
-        if (event.imageMediaProperty().get() != null) {
-            fxImage.setImage(event.imageMediaProperty().get()); // Using imageMediaProperty()
+        // Set the media image if it exists (for edit mode)
+        if (event.imageMediaPathProperty().get() != null) {
+            String imagePath = event.imageMediaPathProperty().get();
+            Image image = new Image(getClass().getResource(imagePath).toExternalForm()); // Correct way to load image
+            fxImage.setImage(image); // Set image in ImageView
         }
 
-        if (event.videoMediaProperty().get() != null) {
-            Media media = event.videoMediaProperty().get(); // Using videoMediaProperty()
+        // Set the video media if it exists (for edit mode)
+        if (event.videoMediaPathProperty().get() != null) {
+            String videoPath = event.videoMediaPathProperty().get();
+            Media media = new Media(getClass().getResource(videoPath).toExternalForm()); // Correct way to load video
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             fxMediaView.setMediaPlayer(mediaPlayer);
             mediaPlayer.play();
@@ -230,7 +234,7 @@ public class NewEventController extends VBox {
     void saveEvent(ActionEvent actionEvent) {
         if (this.event != null) {
             // Extract the plain values from JavaFX properties before saving
-            event.extractToPlainValues();  // Extract plain values into the fields (like titleValue, dateValue, etc.)
+            event.extractToPlainValues();  // Make sure this method is updating the event's plain values
 
             // Validate event using the EventValidator
             boolean isEventValid = EventValidator.isValid(event);
@@ -278,9 +282,6 @@ public class NewEventController extends VBox {
         }
     }
 
-
-
-
     // Helper method to show an error alert
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -289,8 +290,6 @@ public class NewEventController extends VBox {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
 
     private void closeWindowOnSave() {
         Stage stage = (Stage) fxSaveButton.getScene().getWindow();
