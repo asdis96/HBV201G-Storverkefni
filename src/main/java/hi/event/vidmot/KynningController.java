@@ -20,6 +20,7 @@ public class KynningController {
     @FXML private Button fxPlayPause;
     @FXML private Button fxEndButton;
     @FXML private VBox overlay;
+    @FXML private Button fxMuteButton;
     @FXML private MediaView fxVideoView;
 
     private MediaPlayer mediaPlayer;
@@ -41,11 +42,16 @@ public class KynningController {
                 () -> mediaPlayer == null,
                 fxVideoView.mediaPlayerProperty()
         ));
+        fxMuteButton.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> mediaPlayer == null,
+                fxVideoView.mediaPlayerProperty()
+        ));
 
         // Set up the play/pause button action
         fxPlayPause.setOnAction(this::playPause);
         fxStartButton.setOnAction(this::start);
         fxEndButton.setOnAction(this::end);
+        fxMuteButton.setOnAction(this::toggleMute);
     }
 
     // Start the video from the beginning (rewind)
@@ -79,6 +85,15 @@ public class KynningController {
             }
         }
     }
+    // Mute or unmute the media
+    @FXML
+    private void toggleMute(ActionEvent event) {
+        if (mediaPlayer != null) {
+            boolean isMuted = mediaPlayer.isMute();
+            mediaPlayer.setMute(!isMuted); // Toggle the mute state
+            fxMuteButton.setText(isMuted ? "Mute" : "Unmute"); // Update button text
+        }
+    }
 
     // Set the MediaPlayer and link it to the MediaView
     public void setMediaPlayer(Media media) {
@@ -90,7 +105,9 @@ public class KynningController {
         mediaPlayer.setOnReady(() -> {
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);  // Loop indefinitely
             fxVideoView.setMediaPlayer(mediaPlayer);  // Link the MediaPlayer to the MediaView
-            fxVideoView.setVisible(true);  // Ensure the MediaView is visible
+            fxVideoView.setVisible(true);
+            mediaPlayer.setMute(true);  // Initially mute the media
+            fxMuteButton.setText("Unmute");// Ensure the MediaView is visible
             mediaPlayer.play();  // Start playing the video
         });
     }

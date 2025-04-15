@@ -54,7 +54,7 @@ public class EventView extends Dialog<Event> {
         }
 
         // Now, load the media-view.fxml and let FXML inject the KynningController
-        loadMediaView();
+        loadMediaViewController();
 
         // Set size like Event Table
         if (referenceRegion != null) {
@@ -75,6 +75,10 @@ public class EventView extends Dialog<Event> {
         this.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
         populateFields();
+
+        // Stop media when the dialog is closed
+        setOnCloseRequest(closeEvent -> stopMediaPlayback());
+
     }
 
     private void populateFields() {
@@ -141,16 +145,26 @@ public class EventView extends Dialog<Event> {
     }
 
 
-    private void loadMediaView() {
+    private void loadMediaViewController() {
         // Load the media-view.fxml to get the controller (KynningController)
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
+        mediaLoader.setControllerFactory(param -> {
+            kynningController = new KynningController();  // Create the controller manually
+            return kynningController;
+        });
 
         try {
-            VBox mediaVBox = mediaLoader.load();  // Load the VBox and automatically inject the KynningController
-            kynningController = mediaLoader.getController();  // Retrieve the injected KynningController
+            VBox mediaVBox = mediaLoader.load();  // Load the VBox
             mediaView.getChildren().setAll(mediaVBox.getChildren());  // Add the loaded children to mediaView
         } catch (IOException e) {
             showError("Failed to load media-view.fxml");
+        }
+    }
+
+    // Method to stop the media playback when the dialog is closed
+    private void stopMediaPlayback() {
+        if (kynningController != null) {
+            kynningController.stopMediaPlayer();  // Call the stop method in KynningController to stop the media
         }
     }
 
