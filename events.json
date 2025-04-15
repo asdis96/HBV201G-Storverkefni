@@ -1,0 +1,13 @@
+[
+  {
+    "date": "2025-04-15",
+    "description": "ssdd",
+    "videoMediaPath": "hi/event/vidmot/media/world_fixed.mp4",
+    "time": "12:00",
+    "title": "ss",
+    "imageMediaPath": "hi/event/vidmot/media/cat.JPG",
+    "selected": false,
+    "group": "Entertainment",
+    "status": "Active"
+  }
+]

@@ -2,6 +2,7 @@ package hi.event.vidmot;
 
 import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
+import hi.event.vinnsla.EventStorage;
 import hi.event.vinnsla.Group;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -11,13 +12,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -62,11 +63,25 @@ public class NewEventController extends VBox {
 
 
     @FXML
-    private Event event = new Event(false, "", LocalDate.now(), Group.ENTERTAINMENT, EventStatus.ACTIVE, null, null, LocalTime.now(), ""); // New Event by default
+    private Event event = new Event(
+            false,                     // selected
+            "",                         // title
+            LocalDate.now(),            // date
+            Group.ENTERTAINMENT,        // group
+            EventStatus.ACTIVE,         // status
+            null,                       // video media (null initially)
+            null,                       // image media (null initially)
+            LocalTime.now(),            // time
+            "",                         // description
+            "",                         // video media path (empty initially)
+            ""                          // image media path (empty initially)
+    ); // New Event by default
 
     private boolean isNewEvent = true;
 
     private EventManagerController controller;
+    private EventStorage eventStorage;  // Event storage for saving and loading events
+
 
     public void setEditMode(EventManagerController controller, Event event) {
         this.controller = controller;
@@ -156,50 +171,83 @@ public class NewEventController extends VBox {
 
     }
 
-    // Event handler for opening the image file chooser
     @FXML
-    void openImage(ActionEvent event) {
+    void openImage(ActionEvent actionEvent) {
+        fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif", "*.bmp"));
         File file = fxFileChooser.showOpenDialog(null);
+
         if (file != null) {
-            Image image = new Image(file.toURI().toString());
-            this.event.setImageMedia(image);
-            fxImage.setImage(image);
+            try {
+                Path selectedFile = file.toPath();
+
+                // Convert the absolute path to a relative path in the resources folder
+                String relativeImagePath = "media/" + selectedFile.getFileName().toString(); // Adjust if needed
+
+                // Load the image as a resource
+                Image image = new Image(getClass().getResource(relativeImagePath).toExternalForm());
+
+                fxImage.setImage(image);
+
+                // Save the relative path for later use
+                this.event.setImageMedia(image);
+                this.event.setImageMediaPath(relativeImagePath);
+            } catch (Exception e) {
+                showError("Error: " + e.getMessage());
+            }
         } else {
-            System.out.println("No image selected");
+            showError("No image selected.");
         }
     }
 
     @FXML
-    void openMedia(ActionEvent event) {
+    void openMedia(ActionEvent actionEvent) {
+        // Clear any previous filters
+        fxFileChooser.getExtensionFilters().clear();
+
+        // Add new filters for video and audio files
+        fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi", "*.mkv", "*.mov"));
+        fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.flac"));
+
+        // Show the file chooser dialog
         File file = fxFileChooser.showOpenDialog(null);
+
         if (file != null) {
             try {
+                Path selectedFile = file.toPath();
+
+                // Convert the absolute path to a relative path in the resources folder
+                String relativeMediaPath = "media/" + selectedFile.getFileName().toString(); // Adjust if needed
+
+                // Load the media as a resource
                 Media media = new Media(file.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media); // Create a MediaPlayer
-                fxMediaView.setMediaPlayer(mediaPlayer); // Set the MediaPlayer to the MediaView
-                mediaPlayer.play(); // Optionally, play the video automatically
-                this.event.setVideoMedia(media); // Set the media to the event (for saving)
-            } catch (MediaException e) {
-                // Show an alert if the media format is unsupported
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Unsupported Media Format");
-                alert.setHeaderText("File format not supported");
-                alert.setContentText("The selected file format is not supported. Please select a valid media file (e.g., .mp4).");
-                alert.showAndWait();
-                System.out.println("Error: " + e.getMessage());  // Log the error for debugging
+
+                // Set up the media player
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                fxMediaView.setMediaPlayer(mediaPlayer);
+                mediaPlayer.play();  // Play the media automatically
+
+                // Save the relative path for later use
+                this.event.setVideoMedia(media);
+                this.event.setVideoMediaPath(relativeMediaPath); // Save the relative path
             } catch (Exception e) {
-                // Handle any other potential exceptions
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("An error occurred while loading the media.");
-                alert.setContentText("Please try again.");
-                alert.showAndWait();
-                System.out.println("Error: " + e.getMessage());  // Log the error for debugging
+                showError("Error: " + e.getMessage());
             }
         } else {
-            System.out.println("No file selected for media");
+            showError("No media selected.");
         }
     }
+
+
+
+    private void showError(String message) {
+        // Show an error alert with the provided message
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Invalid File Selection");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
 
 
@@ -207,11 +255,11 @@ public class NewEventController extends VBox {
     void saveEvent(ActionEvent event) {
         if (this.event != null) {
             if (isNewEvent) {
-                // If it's a new event, add it to the list
-                controller.addEvent(this.event);
+                // Use the EventManagerController to add the new event
+                controller.addEvent(this.event);  // Let the controller handle the event addition
             } else {
-                // If it's an edited event, update the existing event in the list
-                controller.updateEvent(this.event);
+                // Use the EventManagerController to update the existing event
+                controller.updateEvent(this.event);  // Let the controller handle the event update
             }
             System.out.println("Event saved: " + this.event.getTitle());
 
@@ -228,6 +276,8 @@ public class NewEventController extends VBox {
             System.out.println("No event to save.");
         }
     }
+
+
 
 
     // Handle the Cancel button click, asking for confirmation to discard changes

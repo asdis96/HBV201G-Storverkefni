@@ -9,12 +9,6 @@ import javafx.scene.media.Media;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/******************************************************************************
- *  Nafn    : Ásdís Stefánsdóttir
- *  T-póstur: ahl4@hi.is
- *  Lýsing  : Vinnslu (Model) klasi fyrir viðburði
- *
- *****************************************************************************/
 public class Event {
 
     private SimpleBooleanProperty selected;
@@ -27,9 +21,14 @@ public class Event {
     private SimpleObjectProperty<LocalTime> time; // Time of the event
     private SimpleStringProperty description; // Description of the event
 
+    // Fields for storing relative media paths
+    private SimpleStringProperty videoMediaPath;  // Relative path for video
+    private SimpleStringProperty imageMediaPath;  // Relative path for image
+
     // Constructor
     public Event(Boolean selected, String title, LocalDate date, Group group, EventStatus status,
-                 Media videoMedia, Image imageMedia, LocalTime time, String description) {
+                 Media videoMedia, Image imageMedia, LocalTime time, String description,
+                 String videoMediaPath, String imageMediaPath) {
         this.selected = new SimpleBooleanProperty(selected);
         this.title = new SimpleStringProperty(title);
         this.date = new SimpleObjectProperty<>(date);
@@ -39,6 +38,10 @@ public class Event {
         this.imageMedia = new SimpleObjectProperty<>(imageMedia);
         this.time = new SimpleObjectProperty<>(time);
         this.description = new SimpleStringProperty(description);
+
+        // Initialize the media path properties
+        this.videoMediaPath = new SimpleStringProperty(videoMediaPath);
+        this.imageMediaPath = new SimpleStringProperty(imageMediaPath);
     }
 
     // Getter and Setter for selected (Boolean)
@@ -157,5 +160,30 @@ public class Event {
     public void setDescription(String description) {
         this.description.set(description);
     }
-}
 
+    // Getter and Setter for video media path (String)
+    public SimpleStringProperty videoMediaPathProperty() {
+        return videoMediaPath;
+    }
+
+    public String getVideoMediaPath() {
+        return videoMediaPath.get();
+    }
+
+    public void setVideoMediaPath(String videoMediaPath) {
+        this.videoMediaPath.set(videoMediaPath);
+    }
+
+    // Getter and Setter for image media path (String)
+    public SimpleStringProperty imageMediaPathProperty() {
+        return imageMediaPath;
+    }
+
+    public String getImageMediaPath() {
+        return imageMediaPath.get();
+    }
+
+    public void setImageMediaPath(String imageMediaPath) {
+        this.imageMediaPath.set(imageMediaPath);
+    }
+}
