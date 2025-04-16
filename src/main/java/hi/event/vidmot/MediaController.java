@@ -16,12 +16,12 @@ import javafx.util.Duration;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  : 
+ *  Description  :
  *
  *
  *****************************************************************************/
 
-public class KynningController {
+public class MediaController {
 
     @FXML
     private Button fxStartButton;

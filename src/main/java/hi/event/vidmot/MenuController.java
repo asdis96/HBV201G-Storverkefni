@@ -18,18 +18,24 @@ import java.io.IOException;
 public class MenuController {
 
     /**
-     * Hættir í forritinu
-     * @param event ónotað
+     * Quits the program
+     * @param event unused
      */
     @FXML
     void onExit(ActionEvent event) {
-        getEventManagerController().saveEventsToStorage();
-        Platform.exit();
+        EventManagerController controller = getEventManagerController();
+        if (controller != null) {
+            controller.saveEventsToStorage();
+            Platform.exit();
+        } else {
+            System.out.println("Error: EventManagerController is null!");
+        }
     }
 
+
     /**
-     * Gefur upplýsingar um forritið
-     * @param event ónotað
+     * Gives information about the program
+     * @param event unused
      */
     @FXML
     void onAbout(ActionEvent event) {
@@ -89,14 +95,10 @@ public class MenuController {
 
     @FXML
     public void onLogout(ActionEvent actionEvent) {
-        // Clear the user session
         clearUserSession();
-
-        // Close the current window (EventManager window)
         Stage currentStage = (Stage) ((MenuItem) actionEvent.getSource()).getParentPopup().getOwnerWindow();
         currentStage.close();
 
-        // Switch back to the login screen
         try {
             switchToLoginScreen();
         } catch (IOException e) {
@@ -106,13 +108,11 @@ public class MenuController {
 
 
     private void clearUserSession() {
-        // Nullify or reset the user session (make sure no sensitive data remains)
         UserSession.setLoggedInUser(null); // Assuming you have a method to set the logged-in user to null
         System.out.println("User session cleared.");
     }
 
     private void switchToLoginScreen() throws IOException {
-        // Load the login screen view again
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
@@ -122,6 +122,8 @@ public class MenuController {
         stage.setScene(scene);
         stage.show();
     }
+
+
 
     // Private methods
 

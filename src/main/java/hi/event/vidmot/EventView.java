@@ -36,10 +36,10 @@ public class EventView extends Dialog<Event> {
     private ImageView fxImage;
 
     @FXML
-    private VBox mediaView;  // The VBox that holds KynningController's content
+    private VBox mediaView;  // The VBox that holds MediaController's content
 
     private Event event;
-    private KynningController kynningController;
+    private MediaController mediaController;
     /**
      * Constructs an EventView dialog for displaying event details.
      * @param event The event to display in the dialog.
@@ -118,7 +118,7 @@ public class EventView extends Dialog<Event> {
     }
 
     /**
-     * Loads the video media associated with the event and sets it in the KynningController.
+     * Loads the video media associated with the event and sets it in the MediaController.
      */
     private void loadVideoMedia() {
         String videoPath = event.videoMediaPathProperty().getValue();
@@ -127,10 +127,10 @@ public class EventView extends Dialog<Event> {
                 URL videoUrl = getClass().getResource(videoPath);
                 if (videoUrl != null) {
                     Media videoMedia = new Media(videoUrl.toExternalForm());
-                    if (kynningController != null) {
-                        kynningController.setMediaPlayer(videoMedia);
+                    if (mediaController != null) {
+                        mediaController.setMediaPlayer(videoMedia);
                     } else {
-                        showError("Error: KynningController is not properly injected.");
+                        showError("Error: MediaController is not properly injected.");
                     }
                 } else {
                     showError("Video not found: " + videoPath);
@@ -144,13 +144,13 @@ public class EventView extends Dialog<Event> {
     }
 
     /**
-     * Loads the media-view.fxml and sets up the KynningController to manage media playback.
+     * Loads the media-view.fxml and sets up the MediaController to manage media playback.
      */
     private void loadMediaViewController() {
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
         mediaLoader.setControllerFactory(param -> {
-            kynningController = new KynningController();
-            return kynningController;
+            mediaController = new MediaController();
+            return mediaController;
         });
 
         try {
@@ -165,8 +165,8 @@ public class EventView extends Dialog<Event> {
      * Stops media playback when the dialog is closed.
      */
     private void stopMediaPlayback() {
-        if (kynningController != null) {
-            kynningController.stopMediaPlayer();
+        if (mediaController != null) {
+            mediaController.stopMediaPlayer();
         }
     }
 

@@ -47,29 +47,16 @@ public class LoginController {
             System.out.println("Login successful!");
 
             try {
-                // Load the EventManager view (EventManagerController)
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/eventmanager-view.fxml"));
-                Parent root = loader.load();
-
-                // Get the controller for the EventManager view
-                EventManagerController eventManagerController = loader.getController();
-
                 // Get the logged-in user from the UserStorage
                 User loggedInUser = UserStorage.getUserByUsername(username);
 
                 // Set the logged-in user in the UserSession class
                 UserSession.setLoggedInUser(loggedInUser);
 
-                // Pass the current user to the EventManagerController
-                eventManagerController.setCurrentUser(loggedInUser);
+                // Pass the current user to the EventManagerController through the application
+                application.switchToEventManager(); // Call switchToEventManager to handle the transition
 
-                // Show the EventManager window
-                Stage eventManagerStage = new Stage();
-                eventManagerStage.setTitle("Event Manager");
-                eventManagerStage.setScene(new Scene(root));
-                eventManagerStage.show();
-
-                // Close the login window
+                // After switching to the EventManager, close the login window
                 Stage currentStage = (Stage) loginButton.getScene().getWindow();
                 currentStage.close();
 

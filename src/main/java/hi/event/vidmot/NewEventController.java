@@ -58,7 +58,7 @@ public class NewEventController extends VBox {
     @FXML
     private VBox mediaView;  // The VBox that will hold the MediaView and controls
 
-    private KynningController kynningController;
+    private MediaController mediaController;
 
     @FXML
     private Event event = new Event(
@@ -222,7 +222,7 @@ public class NewEventController extends VBox {
                 // Create a Media object for the selected file
                 Media media = new Media(file.toURI().toString());
 
-                // Call method to set up the media on KynningController
+                // Call method to set up the media on MediaController
                 loadMediaViewController(media);
 
             } catch (Exception e) {
@@ -232,19 +232,19 @@ public class NewEventController extends VBox {
     }
 
     private void loadMediaViewController(Media media) {
-        // Load the media-view.fxml and inject the KynningController
+        // Load the media-view.fxml and inject the MediaController
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
         mediaLoader.setControllerFactory(param -> {
-            kynningController = new KynningController();  // Create the controller manually
-            return kynningController;
+            mediaController = new MediaController();  // Create the controller manually
+            return mediaController;
         });
 
         try {
             VBox mediaVBox = mediaLoader.load();  // Load the VBox that contains the media controls
             mediaView.getChildren().setAll(mediaVBox.getChildren());  // Set the media view in the UI
 
-            // Set up the media on the KynningController
-            kynningController.setMediaPlayer(media);
+            // Set up the media on the MediaController
+            mediaController.setMediaPlayer(media);
 
         } catch (IOException e) {
             e.printStackTrace();  // Handle error loading media-view.fxml

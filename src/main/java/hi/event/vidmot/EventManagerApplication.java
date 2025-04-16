@@ -49,6 +49,7 @@ public class EventManagerApplication extends Application {
     }
 
 
+
     /**
      * Set the static controller variable (this is called after login)
      */

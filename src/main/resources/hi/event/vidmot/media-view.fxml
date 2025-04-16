@@ -7,7 +7,7 @@
 
 <!-- media-view.fxml -->
 
-<VBox fx:id="overlay" alignment="TOP_CENTER" pickOnBounds="false" prefWidth="300" spacing="10.0" StackPane.alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.KynningController">
+<VBox fx:id="overlay" alignment="TOP_CENTER" pickOnBounds="false" prefWidth="300" spacing="10.0" StackPane.alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.MediaController">
     <children>
       <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="300.0">
          <children>
