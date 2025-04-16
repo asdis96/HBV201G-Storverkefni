@@ -1,6 +1,5 @@
 package hi.event.vidmot;
 
-import hi.event.vinnsla.Event;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +11,15 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
+
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  : 
+ *
+ *
+ *****************************************************************************/
 
 public class KynningController {
 
@@ -95,9 +103,10 @@ public class KynningController {
         }
     }
 
-    // Set the MediaPlayer and link it to the MediaView
     public void setMediaPlayer(Media media) {
-        // Create a new MediaPlayer
+        if (media == null) return;  // Handle case where media is null
+
+        // Create a new MediaPlayer for the video media
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnError(() -> System.out.println("Error in player: " + mediaPlayer.getError().getMessage()));
 
@@ -105,12 +114,13 @@ public class KynningController {
         mediaPlayer.setOnReady(() -> {
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);  // Loop indefinitely
             fxVideoView.setMediaPlayer(mediaPlayer);  // Link the MediaPlayer to the MediaView
-            fxVideoView.setVisible(true);
+            fxVideoView.setVisible(true); // Ensure the MediaView is visible
             mediaPlayer.setMute(true);  // Initially mute the media
-            fxMuteButton.setText("Unmute");// Ensure the MediaView is visible
+            fxMuteButton.setText("Unmute");
             mediaPlayer.play();  // Start playing the video
         });
     }
+
 
     // Stop the MediaPlayer when the dialog is closed or when done
     public void stopMediaPlayer() {
@@ -120,13 +130,6 @@ public class KynningController {
         }
     }
 
-    // This method updates the event's video media when the event changes
-    public void setEventView(NewEventController newEventController) {
-        Event event = newEventController.getEvent();
-        event.videoMediaProperty().addListener((observable, oldValue, newValue) -> {
-            setMediaPlayer(newValue);  // Set the media when the event's media changes
-        });
-    }
 
     // Align the overlay (controls) at the bottom-center of the MediaView
     public void setAlignment() {

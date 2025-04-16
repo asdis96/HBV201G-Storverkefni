@@ -15,7 +15,9 @@ import javafx.scene.media.Media;
 
 import java.io.IOException;
 import java.net.URL;
-
+/**
+ * EventView is a custom Dialog that displays detailed information about an event, including media content like images and videos.
+ */
 public class EventView extends Dialog<Event> {
 
     @FXML
@@ -33,19 +35,21 @@ public class EventView extends Dialog<Event> {
     @FXML
     private ImageView fxImage;
 
-    // This will hold the MediaView and controls from KynningController
     @FXML
     private VBox mediaView;  // The VBox that holds KynningController's content
 
     private Event event;
     private KynningController kynningController;
-
+    /**
+     * Constructs an EventView dialog for displaying event details.
+     * @param event The event to display in the dialog.
+     * @param referenceRegion A reference region to determine dialog size, can be null.
+     */
     public EventView(Event event, Region referenceRegion) {
         this.event = event;
 
-        // Load FXML for EventView
         FXMLLoader loader = new FXMLLoader(getClass().getResource("event-view.fxml"));
-        loader.setController(this);  // Set this class as the controller for event-view.fxml
+        loader.setController(this);
         try {
             DialogPane pane = loader.load();
             this.setDialogPane(pane);
@@ -53,62 +57,57 @@ public class EventView extends Dialog<Event> {
             throw new RuntimeException("Failed to load EventView FXML", e);
         }
 
-        // Now, load the media-view.fxml and let FXML inject the KynningController
         loadMediaViewController();
 
         // Set size like Event Table
         if (referenceRegion != null) {
-            this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.9);  // 80% of the reference width
-            this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.9);  // 80% of the reference height
+            this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.9);
+            this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.9);
         } else {
             // Set default sizes if referenceRegion is null
-            this.getDialogPane().setPrefWidth(690);  // Set a fixed width
-            this.getDialogPane().setPrefHeight(640);  // Set a fixed height
+            this.getDialogPane().setPrefWidth(690);
+            this.getDialogPane().setPrefHeight(640);
         }
-
-        // Set maximum size for the dialog if needed
-        this.getDialogPane().setMaxWidth(700);  // Max width
-        this.getDialogPane().setMaxHeight(650); // Max height
+        this.getDialogPane().setMaxWidth(700);
+        this.getDialogPane().setMaxHeight(650);
 
         this.setTitle("Event Details");
         this.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
         populateFields();
-
-        // Stop media when the dialog is closed
         setOnCloseRequest(closeEvent -> stopMediaPlayback());
 
     }
 
+    /**
+     * Populates the fields in the EventView dialog with event data.
+     */
     private void populateFields() {
-        // Set title and description
         fxTitle.setText(event.titleProperty().getValue());
         fxDescription.setText("Description: " + event.descriptionProperty().getValue());
-
-        // Use the formatted date and time values for fxDate and fxTime
         fxDate.setText("Date: " + event.getFormattedDateForFXML());
-        fxTime.setText("Time: " + event.getTimeValue().toString());  // You can also format the time if needed
-
-        // Set group and status
+        fxTime.setText("Time: " + event.getTimeValue().toString());
         fxGroup.setText("Group: " + event.groupProperty().getValue());
         fxStatus.setText("Status: " + event.statusProperty().getValue());
 
-        // Load the image using the loadImageMedia() method from Event class
-        loadImageMedia();  // This will load the image based on the imageMediaPath
-        loadVideoMedia();  // This will load the video based on the videoMediaPath
+        loadImageMedia();
+        loadVideoMedia();
     }
 
+    /**
+     * Loads the image media associated with the event and sets it to the ImageView.
+     */
     private void loadImageMedia() {
-        String imagePath = event.imageMediaPathProperty().getValue();  // Get the relative path for the image
+        String imagePath = event.imageMediaPathProperty().getValue();
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
-                // Access the image using getClass().getResource() for classpath resources
+
                 URL imageUrl = getClass().getResource(imagePath);
                 if (imageUrl != null) {
-                    // Create the Image object using the URL from the classpath
+
                     Image image = new Image(imageUrl.toExternalForm());
-                    fxImage.setImage(image);  // Set the image to the UI element
-                    event.imageMediaProperty().set(image);  // Set JavaFX property value
+                    fxImage.setImage(image);
+                    event.imageMediaProperty().set(image);
                 } else {
                     showError("Image not found: " + imagePath);
                 }
@@ -118,6 +117,9 @@ public class EventView extends Dialog<Event> {
         }
     }
 
+    /**
+     * Loads the video media associated with the event and sets it in the KynningController.
+     */
     private void loadVideoMedia() {
         String videoPath = event.videoMediaPathProperty().getValue();
         if (videoPath != null && !videoPath.isEmpty()) {
@@ -125,10 +127,8 @@ public class EventView extends Dialog<Event> {
                 URL videoUrl = getClass().getResource(videoPath);
                 if (videoUrl != null) {
                     Media videoMedia = new Media(videoUrl.toExternalForm());
-
-                    // Cast the user data of mediaView to KynningController
                     if (kynningController != null) {
-                        kynningController.setMediaPlayer(videoMedia);  // Set the media player
+                        kynningController.setMediaPlayer(videoMedia);
                     } else {
                         showError("Error: KynningController is not properly injected.");
                     }
@@ -143,32 +143,38 @@ public class EventView extends Dialog<Event> {
         }
     }
 
-
+    /**
+     * Loads the media-view.fxml and sets up the KynningController to manage media playback.
+     */
     private void loadMediaViewController() {
-        // Load the media-view.fxml to get the controller (KynningController)
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
         mediaLoader.setControllerFactory(param -> {
-            kynningController = new KynningController();  // Create the controller manually
+            kynningController = new KynningController();
             return kynningController;
         });
 
         try {
-            VBox mediaVBox = mediaLoader.load();  // Load the VBox
-            mediaView.getChildren().setAll(mediaVBox.getChildren());  // Add the loaded children to mediaView
+            VBox mediaVBox = mediaLoader.load();
+            mediaView.getChildren().setAll(mediaVBox.getChildren());
         } catch (IOException e) {
             showError("Failed to load media-view.fxml");
         }
     }
 
-    // Method to stop the media playback when the dialog is closed
+    /**
+     * Stops media playback when the dialog is closed.
+     */
     private void stopMediaPlayback() {
         if (kynningController != null) {
-            kynningController.stopMediaPlayer();  // Call the stop method in KynningController to stop the media
+            kynningController.stopMediaPlayer();
         }
     }
 
+    /**
+     * Displays an error message to the console or logs it.
+     * @param message The error message to display.
+     */
     private void showError(String message) {
-        // Handle error, could be logging or a user dialog
         System.out.println(message);
     }
 }

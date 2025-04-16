@@ -112,10 +112,8 @@
                 <Insets />
             </VBox.margin>
         </HBox>
-        <MediaView fx:id="fxMediaView" fitHeight="170.0" fitWidth="250.0">
-            <VBox.margin>
-                <Insets />
-            </VBox.margin></MediaView>
+        <!-- Include media-view.fxml -->
+        <fx:include fx:id="mediaView" source="media-view.fxml" />
         <padding>
             <Insets top="10.0" />
         </padding>

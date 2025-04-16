@@ -1,13 +1,10 @@
 package hi.event.vidmot;
 
-import hi.event.vinnsla.Event;
-import hi.event.vinnsla.EventStatus;
-import hi.event.vinnsla.EventStorage;
-import hi.event.vinnsla.EventValidator;
-import hi.event.vinnsla.Group;
+import hi.event.vinnsla.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,6 +54,11 @@ public class NewEventController extends VBox {
 
     @FXML
     private FileChooser fxFileChooser = new FileChooser();
+
+    @FXML
+    private VBox mediaView;  // The VBox that will hold the MediaView and controls
+
+    private KynningController kynningController;
 
     @FXML
     private Event event = new Event(
@@ -203,10 +205,13 @@ public class NewEventController extends VBox {
 
     @FXML
     void openMedia(ActionEvent actionEvent) {
+        // Open the file chooser for selecting media
+        FileChooser fxFileChooser = new FileChooser();
         fxFileChooser.getExtensionFilters().clear();
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi", "*.mkv", "*.mov"));
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.flac"));
 
+        // Show file chooser and get the selected file
         File file = fxFileChooser.showOpenDialog(null);
 
         if (file != null) {
@@ -214,18 +219,35 @@ public class NewEventController extends VBox {
                 Path selectedFile = file.toPath();
                 String relativeMediaPath = "media/" + selectedFile.getFileName().toString();
 
+                // Create a Media object for the selected file
                 Media media = new Media(file.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                fxMediaView.setMediaPlayer(mediaPlayer);
-                mediaPlayer.play();
 
-                this.event.videoMediaProperty().set(media);
-                this.event.videoMediaPathProperty().set(relativeMediaPath);
+                // Call method to set up the media on KynningController
+                loadMediaViewController(media);
+
             } catch (Exception e) {
-                showError("Error: " + e.getMessage());
+                e.printStackTrace();  // Handle error
             }
-        } else {
-            showError("No media selected.");
+        }
+    }
+
+    private void loadMediaViewController(Media media) {
+        // Load the media-view.fxml and inject the KynningController
+        FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
+        mediaLoader.setControllerFactory(param -> {
+            kynningController = new KynningController();  // Create the controller manually
+            return kynningController;
+        });
+
+        try {
+            VBox mediaVBox = mediaLoader.load();  // Load the VBox that contains the media controls
+            mediaView.getChildren().setAll(mediaVBox.getChildren());  // Set the media view in the UI
+
+            // Set up the media on the KynningController
+            kynningController.setMediaPlayer(media);
+
+        } catch (IOException e) {
+            e.printStackTrace();  // Handle error loading media-view.fxml
         }
     }
 

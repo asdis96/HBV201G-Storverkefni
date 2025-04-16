@@ -7,6 +7,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  : Controller for handling user sign-up functionality.
+ *  Handles user input, validates the form, creates a new user,
+ *  and stores the user in the UserStorage.
+ *****************************************************************************/
 
 public class SignUpController {
 
@@ -22,6 +30,11 @@ public class SignUpController {
     @FXML
     private PasswordField passwordField;
 
+    /**
+     * Called when the sign-up button is clicked.
+     * Validates the input fields, creates a new user, and stores it.
+     * If any field is empty, an alert is shown.
+     */
     @FXML
     private void onSignUpButtonClicked() {
         String name = nameField.getText();
@@ -33,19 +46,18 @@ public class SignUpController {
             showAlert("Please fill in all fields.");
             return;
         }
-
-        // Create a new user
         User newUser = new User(username, password, email, name);
-
-        // Save new user using UserStorage class
         UserStorage.addUser(newUser);
 
         showAlert("Sign Up successful! You can now log in.");
 
-        // Close the current window
         closeWindow();
     }
 
+    /**
+     * Displays an informational alert with the given message.
+     * @param message The message to display in the alert.
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Sign Up");
@@ -54,8 +66,10 @@ public class SignUpController {
         alert.showAndWait();
     }
 
+    /**
+     * Closes the current window (stage).
+     */
     private void closeWindow() {
-        // Get the Stage from the current button's event source
         Stage stage = (Stage) nameField.getScene().getWindow();
         stage.close();
     }
