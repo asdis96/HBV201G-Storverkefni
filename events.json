@@ -28,4 +28,14 @@
   "imageMediaPathValue" : "media/monk.JPG",
   "timeValue" : "12:00:00",
   "descriptionValue" : "asda"
+}, {
+  "selectedValue" : false,
+  "titleValue" : "Monk MARATHON",
+  "dateValue" : "2025-04-25",
+  "groupValue" : "Entertainment",
+  "statusValue" : "Active",
+  "videoMediaPathValue" : "",
+  "imageMediaPathValue" : "media/monk.JPG",
+  "timeValue" : "20:00:00",
+  "descriptionValue" : "The greatest event of the year is finally here ! "
 } ]

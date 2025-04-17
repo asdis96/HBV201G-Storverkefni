@@ -10,6 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  :
+ *
+ *
+ *****************************************************************************/
+
 public class UserStorage {
 
     private static final File USERS_FILE = new File("users.json");
@@ -53,10 +62,9 @@ public class UserStorage {
     // Method to add a new user to the JSON file
     public static void addUser(User user) {
         try {
-            List<User> users = loadUsers();  // Load existing users
-            users.add(user);  // Add new user
+            List<User> users = loadUsers();
+            users.add(user);
 
-            // Convert users list to JSONArray
             JSONArray usersArray = new JSONArray();
             for (User u : users) {
                 JSONObject userJSON = new JSONObject();
@@ -68,7 +76,6 @@ public class UserStorage {
                 usersArray.put(userJSON);
             }
 
-            // Write the updated users list back to the file
             try (FileWriter writer = new FileWriter(USERS_FILE)) {
                 writer.write(usersArray.toString());
             }
@@ -77,15 +84,15 @@ public class UserStorage {
         }
     }
 
-    // Method to check if the username and password match any user
+
     public static boolean validateLogin(String username, String password) {
         List<User> users = loadUsers();
         for (User user : users) {
             if (user.getUsernameValue().equals(username) && user.getPasswordValue().equals(password)) {
-                return true;  // Successful login
+                return true;
             }
         }
-        return false;  // No match found
+        return false;
     }
 
     // Method to get a user by username
@@ -93,17 +100,16 @@ public class UserStorage {
         List<User> users = loadUsers();
         for (User user : users) {
             if (user.getUsernameValue().equals(username)) {
-                return user;  // Return the user if username matches
+                return user;
             }
         }
-        return null;  // Return null if no user is found with the provided username
+        return null;
     }
 
     // Method to update an existing user's information in the JSON file
     public static void updateUser(User updatedUser) {
         List<User> users = loadUsers();
 
-        // Find the user by username and update their information
         for (User user : users) {
             if (user.getUsernameValue().equals(updatedUser.getUsernameValue())) {
                 // Update the user information

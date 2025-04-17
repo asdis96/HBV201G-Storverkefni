@@ -2,19 +2,15 @@
 
 <!-- eventmanager-view.fxml -->
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="root" prefHeight="700.0" prefWidth="900.0" stylesheets="@eventmanager.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
+<BorderPane fx:id="root" prefHeight="700.0" prefWidth="900.0" stylesheets="@eventmanager.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
     <!-- Top section (Menu) -->
     <top>
         <fx:include source="menu-view.fxml" />
@@ -75,8 +71,22 @@
     <center>
         <!-- VBox to stack the search bar and table -->
         <VBox spacing="10" style="-fx-padding: 10;">
-            <!-- Search Bar -->
+
+            <!-- Sort and Search Bar -->
             <HBox alignment="TOP_RIGHT" spacing="10">
+
+                <ComboBox fx:id="sortComboBox" promptText="Sort by Title">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Title A–Z" />
+                            <String fx:value="Title Z–A" />
+                        </FXCollections>
+                    </items>
+               <HBox.margin>
+                  <Insets right="30.0" />
+               </HBox.margin>
+                </ComboBox>
+
                 <TextField fx:id="searchField" prefHeight="27.0" prefWidth="260.0" promptText="Search by title" />
             </HBox>
 

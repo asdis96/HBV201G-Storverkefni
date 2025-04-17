@@ -4,7 +4,14 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  : 
+ *
+ *
+ *****************************************************************************/
 public class EventValidator {
 
     // Base directory for media files

@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.media.MediaView?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
 <!-- new-event.fxml) -->
 
-<HBox prefHeight="606.0" prefWidth="750.0" spacing="17.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.NewEventController">
+<HBox prefHeight="606.0" prefWidth="750.0" spacing="17.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.NewEventController">
 
     <!-- First VBox for form fields (Title, Date, Group, Status, etc.) -->
 
@@ -46,13 +37,23 @@
                 <Label prefHeight="26.0" prefWidth="70.0" text="Date" />
                 <DatePicker fx:id="fxDate" promptText="Select date" />
             </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
         </HBox>
         <HBox prefHeight="65.0" prefWidth="390.0" spacing="20.0">
             <children>
 
                 <!-- Event Time Spinner -->
                 <Label prefHeight="26.0" prefWidth="70.0" text="Time" />
-                <Spinner fx:id="fxTime" prefWidth="185.5" />
+                <!-- Hour Spinner -->
+                <Spinner fx:id="fxHoursSpinner" prefWidth="100.0" />
+
+                <!-- Label for colon between hour and minute spinners -->
+                <Label text=":" />
+
+                <!-- Minute Spinner -->
+                <Spinner fx:id="fxMinutesSpinner" prefWidth="100.0" />
             </children>
         </HBox>
         <HBox prefHeight="65.0" prefWidth="390.0" spacing="20.0">

@@ -15,6 +15,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  :
+ *
+ *
+ *****************************************************************************/
+
 public class MenuController {
 
     /**
@@ -53,7 +62,6 @@ public class MenuController {
      */
     @FXML
     void onSetColor(ActionEvent event) {
-        // Show color options (you can expand this logic further)
         getEventManagerController().breytaLit((RadioMenuItem) event.getSource());
     }
 
@@ -95,7 +103,7 @@ public class MenuController {
 
     @FXML
     public void onLogout(ActionEvent actionEvent) {
-        clearUserSession();
+        UserSession.clearLoggedInUser();
         Stage currentStage = (Stage) ((MenuItem) actionEvent.getSource()).getParentPopup().getOwnerWindow();
         currentStage.close();
 

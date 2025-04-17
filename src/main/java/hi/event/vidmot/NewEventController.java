@@ -8,19 +8,31 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  :
+ *
+ *
+ *****************************************************************************/
 
 public class NewEventController extends VBox {
 
@@ -30,140 +42,138 @@ public class NewEventController extends VBox {
     public ImageView fxImage;
     @FXML
     public MediaView fxMediaView;
-
     @FXML
     private ComboBox<Group> fxGroup;
-
     @FXML
     private ComboBox<EventStatus> fxStatus;
-
     @FXML
     private TextField fxTitle;
-
-    @FXML
-    private Spinner<Integer> fxTime;
-
     @FXML
     private Button fxCancelButton;
-
     @FXML
     private TextArea fxDescription;
-
     @FXML
     private Button fxSaveButton;
-
     @FXML
     private FileChooser fxFileChooser = new FileChooser();
-
     @FXML
-    private VBox mediaView;  // The VBox that will hold the MediaView and controls
-
-    private MediaController mediaController;
+    private VBox mediaView;
+    @FXML
+    private Spinner<Integer> fxHoursSpinner;
+    @FXML
+    private Spinner<Integer> fxMinutesSpinner;
 
     @FXML
     private Event event = new Event(
-            false,                     // selected
-            "",                         // title
-            LocalDate.now(),            // date
-            Group.ENTERTAINMENT,        // group
-            EventStatus.ACTIVE,         // status
-            null,                       // video media (null initially)
-            null,                       // image media (null initially)
-            LocalTime.now(),            // time
-            ""                          // description
-    ); // New Event by default
+            false,
+            "",
+            LocalDate.now(),
+            Group.ENTERTAINMENT,
+            EventStatus.ACTIVE,
+            null,
+            null,
+            LocalTime.now(),
+            ""
+    );
 
-
-    private boolean isNewEvent = true;
-
+    private MediaController mediaController;
     private EventManagerController controller;
     private EventStorage eventStorage = new EventStorage();
     private EventValidator validator = new EventValidator();
+    private boolean isNewEvent = true;
 
     public void setEditMode(EventManagerController controller, Event event) {
         this.controller = controller;
         this.event = event;
         this.isNewEvent = false;
 
-        populateFormWithEventDetails(); // Only needed for edit mode
+        populateFormWithEventDetails();
     }
 
     public void setController(EventManagerController controller) {
         this.controller = controller;
         this.isNewEvent = true;
-        initialize(); // Manual call because initialize won't auto-fire when controller is loaded via FXML
+        initialize();
     }
 
     public void initialize() {
-        // Initialize ComboBoxes
         fxGroup.setItems(FXCollections.observableArrayList(Group.values()));
         fxStatus.setItems(FXCollections.observableArrayList(EventStatus.values()));
-        fxStatus.getSelectionModel().select(EventStatus.ACTIVE); // Set default status as ACTIVE
-
-        // Bind properties from the event object
+        fxStatus.getSelectionModel().select(EventStatus.ACTIVE);
         fxTitle.textProperty().bindBidirectional(event.titleProperty());
         fxGroup.valueProperty().bindBidirectional(event.groupProperty());
         fxDate.valueProperty().bindBidirectional(event.dateProperty());
-        fxTime.valueProperty().addListener((obs, oldVal, newVal) -> event.timeProperty().set(LocalTime.of(newVal, 0))); // Set event time
-        fxDescription.textProperty().bindBidirectional(event.descriptionProperty()); // Bind description field
+        formatDatePicker(fxDate);
 
-        fxTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, LocalTime.now().getHour())); // Default to current hour
+        fxDescription.textProperty().bindBidirectional(event.descriptionProperty());
 
-        // Set up the time spinner
         setUpTimeSpinner();
-
-        // Initialize file choosers
         initializeFileChoosers();
 
-        // If this is an existing event (edit), populate the form
         if (!isNewEvent) {
             populateFormWithEventDetails();
         }
     }
 
+    private void formatDatePicker(DatePicker datePicker) {
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            @Override
+            public String toString(LocalDate date) {
+                return (date != null) ? formatter.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+            }
+        });
+    }
+
     private void initializeFileChoosers() {
-        // Image file chooser filter
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif", "*.bmp"));
     }
 
-
-    // Set up the spinner for selecting the time of the event
     private void setUpTimeSpinner() {
-        fxTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12)); // Default to 12 hours
+        fxHoursSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, LocalTime.now().getHour()));
+        fxHoursSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
+        fxMinutesSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, LocalTime.now().getMinute()));
+        fxMinutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
+        event.timeProperty().addListener((obs, oldTime, newTime) -> updateSpinners(newTime));
+        updateSpinners(LocalTime.now());
+    }
 
-        // When the time spinner changes, update the event's time
-        fxTime.valueProperty().addListener((obs, oldVal, newVal) ->
-                event.timeProperty().set(LocalTime.of(newVal, 0))
-        );
+    private void updateEventTime() {
+        LocalTime selectedTime = LocalTime.of(fxHoursSpinner.getValue(), fxMinutesSpinner.getValue());
+        event.timeProperty().set(selectedTime);
+    }
 
-        // When the event's time changes, update the spinner
-        event.timeProperty().addListener((obs, oldTime, newTime) ->
-                fxTime.getValueFactory().setValue(newTime.getHour()));
+    private void updateSpinners(LocalTime time) {
+        fxHoursSpinner.getValueFactory().setValue(time.getHour());
+        fxMinutesSpinner.getValueFactory().setValue(time.getMinute());
     }
 
     private void populateFormWithEventDetails() {
-        // Use JavaFX properties for binding UI elements
-        fxTitle.textProperty().bindBidirectional(event.titleProperty()); // Using titleProperty() to bind
-        fxGroup.valueProperty().bindBidirectional(event.groupProperty()); // Using groupProperty() to bind
-        fxDate.valueProperty().bindBidirectional(event.dateProperty()); // Using dateProperty() to bind
-        fxTime.valueProperty().addListener((obs, oldVal, newVal) ->
-                event.timeProperty().set(LocalTime.of(newVal, 0))); // Binding time
-        fxDescription.textProperty().bindBidirectional(event.descriptionProperty()); // Binding descriptionProperty()
-
-        // Bind the status ComboBox using the statusProperty()
+        fxTitle.textProperty().bindBidirectional(event.titleProperty());
+        fxGroup.valueProperty().bindBidirectional(event.groupProperty());
+        fxDate.valueProperty().bindBidirectional(event.dateProperty());
+        formatDatePicker(fxDate);
+        LocalTime eventTime = event.timeProperty().get();
+        fxHoursSpinner.getValueFactory().setValue(eventTime.getHour());
+        fxMinutesSpinner.getValueFactory().setValue(eventTime.getMinute());
+        fxDescription.textProperty().bindBidirectional(event.descriptionProperty());
         fxStatus.getSelectionModel().select(event.statusProperty().get());
 
-        // Set the media image if it exists (for edit mode)
         if (event.imageMediaPathProperty().get() != null) {
             String imagePath = event.imageMediaPathProperty().get();
-            Image image = new Image(getClass().getResource(imagePath).toExternalForm()); // Correct way to load image
-            fxImage.setImage(image); // Set image in ImageView
+            Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+            fxImage.setImage(image);
         }
 
-        // Set the video media if it exists (for edit mode)
         if (event.videoMediaPathProperty().get() != null) {
             String videoPath = event.videoMediaPathProperty().get();
-            Media media = new Media(getClass().getResource(videoPath).toExternalForm()); // Correct way to load video
+            Media media = new Media(getClass().getResource(videoPath).toExternalForm());
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             fxMediaView.setMediaPlayer(mediaPlayer);
             mediaPlayer.play();
@@ -178,22 +188,12 @@ public class NewEventController extends VBox {
 
         if (file != null) {
             try {
-                // Get the selected file path
                 Path selectedFile = file.toPath();
                 String relativeImagePath = "media/" + selectedFile.getFileName().toString();
-
-                // Create an Image from the file
                 Image image = new Image(file.toURI().toString());
-
-                // Set the image to the UI element
                 fxImage.setImage(image);
-
-                // Update the event's imageMedia property (JavaFX Property)
-                event.imageMediaProperty().set(image); // Set JavaFX property value
-
-                // Update the plain value of imageMediaPath (String value)
+                event.imageMediaProperty().set(image);
                 event.imageMediaPathProperty().set(relativeImagePath);
-
             } catch (Exception e) {
                 showError("Error: " + e.getMessage());
             }
@@ -205,13 +205,10 @@ public class NewEventController extends VBox {
 
     @FXML
     void openMedia(ActionEvent actionEvent) {
-        // Open the file chooser for selecting media
         FileChooser fxFileChooser = new FileChooser();
         fxFileChooser.getExtensionFilters().clear();
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi", "*.mkv", "*.mov"));
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.flac"));
-
-        // Show file chooser and get the selected file
         File file = fxFileChooser.showOpenDialog(null);
 
         if (file != null) {
@@ -219,10 +216,8 @@ public class NewEventController extends VBox {
                 Path selectedFile = file.toPath();
                 String relativeMediaPath = "media/" + selectedFile.getFileName().toString();
 
-                // Create a Media object for the selected file
                 Media media = new Media(file.toURI().toString());
 
-                // Call method to set up the media on MediaController
                 loadMediaViewController(media);
 
             } catch (Exception e) {
@@ -232,22 +227,18 @@ public class NewEventController extends VBox {
     }
 
     private void loadMediaViewController(Media media) {
-        // Load the media-view.fxml and inject the MediaController
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
         mediaLoader.setControllerFactory(param -> {
-            mediaController = new MediaController();  // Create the controller manually
+            mediaController = new MediaController();
             return mediaController;
         });
 
         try {
-            VBox mediaVBox = mediaLoader.load();  // Load the VBox that contains the media controls
-            mediaView.getChildren().setAll(mediaVBox.getChildren());  // Set the media view in the UI
-
-            // Set up the media on the MediaController
+            VBox mediaVBox = mediaLoader.load();
+            mediaView.getChildren().setAll(mediaVBox.getChildren());
             mediaController.setMediaPlayer(media);
-
         } catch (IOException e) {
-            e.printStackTrace();  // Handle error loading media-view.fxml
+            e.printStackTrace();
         }
     }
 
@@ -255,45 +246,32 @@ public class NewEventController extends VBox {
     @FXML
     void saveEvent(ActionEvent actionEvent) {
         if (this.event != null) {
-            // Extract the plain values from JavaFX properties before saving
-            event.extractToPlainValues();  // Make sure this method is updating the event's plain values
-
-            // Validate event using the EventValidator
+            event.extractToPlainValues();
             boolean isEventValid = EventValidator.isValid(event);
-
-            // If there are validation errors, show an alert and return
             if (!isEventValid) {
                 showError("Error: \nOne or more event fields are invalid.");
-                return;  // If validation fails, stop the process
+                return;
             }
 
-            // If no validation errors, proceed with saving
             try {
                 if (isNewEvent) {
-                    // Save the new event using EventStorage (JSON)
-                    EventStorage.saveEvents(List.of(this.event)); // Save the event with the plain fields
-                    System.out.println("Event saved: " + event.getTitleValue()); // Access the plain field using getter
+                    EventStorage.saveEvents(List.of(this.event));
+                    System.out.println("Event saved: " + event.getTitleValue());
                     controller.addEvent(this.event);
                 } else {
-                    // Save the updated event using EventStorage
-                    EventStorage.saveEvents(List.of(this.event)); // Save the event with the plain fields
+                    EventStorage.saveEvents(List.of(this.event));
                     System.out.println("Event updated: " + event.getTitleValue());
                     controller.updateEvent(this.event);
                 }
-
-                // Show success alert
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Event Saved");
                 alert.setHeaderText("Event saved successfully!");
                 alert.setContentText("Your event has been saved.");
                 alert.showAndWait();
 
-                // Re-enable the buttons in EventManagerController
                 if (controller != null) {
-                    controller.enableButtons();  // Call the method to re-enable the buttons
+                    controller.enableButtons();
                 }
-
-                // Close the window after saving
                 closeWindowOnSave();
 
             } catch (IOException e) {
@@ -304,7 +282,6 @@ public class NewEventController extends VBox {
         }
     }
 
-    // Helper method to show an error alert
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");

@@ -41,22 +41,14 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // Use UserStorage to validate login credentials
         if (UserStorage.validateLogin(username, password)) {
-            // Successful login logic here
             System.out.println("Login successful!");
 
             try {
-                // Get the logged-in user from the UserStorage
                 User loggedInUser = UserStorage.getUserByUsername(username);
-
-                // Set the logged-in user in the UserSession class
                 UserSession.setLoggedInUser(loggedInUser);
 
-                // Pass the current user to the EventManagerController through the application
-                application.switchToEventManager(); // Call switchToEventManager to handle the transition
-
-                // After switching to the EventManager, close the login window
+                application.switchToEventManager();
                 Stage currentStage = (Stage) loginButton.getScene().getWindow();
                 currentStage.close();
 

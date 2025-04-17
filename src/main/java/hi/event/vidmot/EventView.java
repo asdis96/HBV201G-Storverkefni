@@ -15,9 +15,16 @@ import javafx.scene.media.Media;
 
 import java.io.IOException;
 import java.net.URL;
-/**
- * EventView is a custom Dialog that displays detailed information about an event, including media content like images and videos.
- */
+
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email     : ahl4@hi.is
+ *
+ *  Description  : EventView is a custom Dialog that displays detailed
+ *  information about an event, including media content like images and videos.
+ *
+ *****************************************************************************/
+
 public class EventView extends Dialog<Event> {
 
     @FXML
@@ -34,12 +41,13 @@ public class EventView extends Dialog<Event> {
     private Label fxDescription;
     @FXML
     private ImageView fxImage;
-
     @FXML
     private VBox mediaView;  // The VBox that holds MediaController's content
 
     private Event event;
     private MediaController mediaController;
+
+
     /**
      * Constructs an EventView dialog for displaying event details.
      * @param event The event to display in the dialog.
@@ -47,7 +55,6 @@ public class EventView extends Dialog<Event> {
      */
     public EventView(Event event, Region referenceRegion) {
         this.event = event;
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("event-view.fxml"));
         loader.setController(this);
         try {
@@ -59,12 +66,10 @@ public class EventView extends Dialog<Event> {
 
         loadMediaViewController();
 
-        // Set size like Event Table
         if (referenceRegion != null) {
             this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.9);
             this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.9);
         } else {
-            // Set default sizes if referenceRegion is null
             this.getDialogPane().setPrefWidth(690);
             this.getDialogPane().setPrefHeight(640);
         }

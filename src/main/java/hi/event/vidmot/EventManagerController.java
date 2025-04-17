@@ -5,8 +5,11 @@ import hi.event.vinnsla.Event;
 import hi.event.vinnsla.EventStatus;
 import hi.event.vinnsla.EventStorage;
 import hi.event.vinnsla.User;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +27,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +39,8 @@ public class EventManagerController implements Initializable {
     public VBox sidebarContainer;
     @FXML
     public BorderPane root;
+    @FXML
+    private ComboBox<String> sortComboBox;
     @FXML
     private Button fxNewEvent;
     @FXML
@@ -58,70 +65,102 @@ public class EventManagerController implements Initializable {
     private TableColumn<Event, String> groupColumn;
     @FXML
     private TableColumn<Event, String> statusColumn;
-
     @FXML
-    private TextField searchField;  // Search bar TextField
-
-
-    // Instance variables to store events and handle storage
-    private List<Event> events = new ArrayList<>();  // List to store all events
-    private EventStorage eventStorage = new EventStorage();  // EventStorage instance to handle saving/loading
-
+    private TextField searchField;
     @FXML
     private Button btnProcessSelected;
 
+    private List<Event> events = new ArrayList<>();
+    private EventStorage eventStorage = new EventStorage();
     private ObservableList<Event> observableEvents = FXCollections.observableArrayList();
-    private NewEventController currentView;  // Currently viewed event form
+    private NewEventController currentView;
 
-    private User currentUser;
-
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-        // You can now use currentUser to display user's name or manage user-specific events
-    }
 
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initializing the columns in the TableView
+        initializeTableColumns();
+       loadEventsFromStorage();
+        setupSearchFilter();
+        setupSortComboBox();
+        setupProcessButton();
+        eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    private void initializeTableColumns() {
         selectColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
         selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
-
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         groupColumn.setCellValueFactory(new PropertyValueFactory<>("group"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        dateColumn.setCellValueFactory(cellData -> {
+            Event event = cellData.getValue();
+            return new SimpleStringProperty(event.getFormattedDateForFXML());
+        });
+        dateColumn.setCellFactory(column -> new TableCell<Event, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                }
+            }
+        });
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+    }
 
-       loadEventsFromStorage();
+    private void setupSortComboBox() {
+        sortComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                if (newVal.equals("Title A–Z")) {
+                    titleColumn.setSortType(TableColumn.SortType.ASCENDING);
+                } else if (newVal.equals("Title Z–A")) {
+                    titleColumn.setSortType(TableColumn.SortType.DESCENDING);
+                }
+                eventTableView.getSortOrder().clear();
+                eventTableView.getSortOrder().add(titleColumn);
+            }
+        });
 
-        // Ensure that btnProcessSelected is not null before setting its action
+        sortComboBox.getSelectionModel().select("Title A–Z");
+    }
+
+    private void setupProcessButton() {
         if (btnProcessSelected != null) {
             btnProcessSelected.setOnAction(event -> processSelectedEvents());
         } else {
             System.out.println("Error: btnProcessSelected is null!");
         }
-
-        // Setting selection mode for eventTableView
-        eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        // Add listener to the search bar
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterTable(newValue);
-        });
     }
+
+    private void setupSearchFilter() {
+        FilteredList<Event> filteredEvents = new FilteredList<>(observableEvents, e -> true);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredEvents.setPredicate(event -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                return event.getTitleValue().toLowerCase().contains(newValue.toLowerCase());
+            });
+        });
+
+        SortedList<Event> sortedEvents = new SortedList<>(filteredEvents);
+        sortedEvents.comparatorProperty().bind(eventTableView.comparatorProperty());
+        eventTableView.setItems(sortedEvents);
+        eventTableView.getSortOrder().add(titleColumn);
+    }
+
 
     private void loadEventsFromStorage() {
         try {
-            // Load events from storage
-            events = EventStorage.loadEvents();  // Assuming loadEvents returns a List<Event>
+            events = EventStorage.loadEvents();
             if (events != null) {
-                // Populate the observable list
                 observableEvents = FXCollections.observableArrayList(events);
-                // Ensure the JavaFX properties are populated from plain values
                 for (Event event : observableEvents) {
-                    event.populateFromPlainValues();  // Populate JavaFX properties from plain values
+                    event.populateFromPlainValues();
                 }
-                // Bind the observable list to the TableView
                 eventTableView.setItems(observableEvents);
             }
         } catch (IOException e) {
@@ -131,7 +170,6 @@ public class EventManagerController implements Initializable {
         }
     }
 
-
     public void enableButtons() {
         fxNewEvent.setDisable(false);
         fxEditEvent.setDisable(false);
@@ -139,43 +177,25 @@ public class EventManagerController implements Initializable {
         fxChangeStatus.setDisable(false);
     }
 
-    private void filterTable(String searchQuery) {
-        ObservableList<Event> filteredList = FXCollections.observableArrayList();
-
-        for (Event event : observableEvents) {
-            // Check if the event title matches the search query (case-insensitive)
-            if (event.getTitleValue().toLowerCase().contains(searchQuery.toLowerCase())) {
-                filteredList.add(event);
-            }
-        }
-
-        // Update the TableView with the filtered list
-        eventTableView.setItems(filteredList);
-    }
-
-
-    // This method will be called when the button is clicked to process selected events
     public void processSelectedEvents() {
         getSelectedEvents();
     }
 
-    // Method to get and print selected events
     public void getSelectedEvents() {
         for (Event event : eventTableView.getItems()) {
-            if (event.selectedProperty().get()) {  // Use the JavaFX property to get the selected state
-                System.out.println("Selected event: " + event.titleProperty().get());  // Access title through JavaFX property
+            if (event.selectedProperty().get()) {
+                System.out.println("Selected event: " + event.titleProperty().get());
             }
         }
     }
-
 
     @FXML
     void onNewEvent(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("new-event.fxml"));
-            Parent root = loader.load(); // Let FXMLLoader create and initialize the controller
-            NewEventController newEventController = loader.getController(); // Get the controller created by FXML
-            newEventController.setController(this); // Pass the EventManagerController if needed
+            Parent root = loader.load();
+            NewEventController newEventController = loader.getController();
+            newEventController.setController(this);
 
             Stage newEventStage = new Stage();
             newEventStage.setTitle("Create New Event");
@@ -187,17 +207,15 @@ public class EventManagerController implements Initializable {
         }
     }
 
-
     @FXML
     private void onViewEvent() {
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            EventView eventView = new EventView(selectedEvent, eventTableView); // or fxEventViews
+            EventView eventView = new EventView(selectedEvent, eventTableView);
             eventView.initOwner(eventTableView.getScene().getWindow());
             eventView.showAndWait();
         }
     }
-
 
     @FXML
     void onEditEvent(ActionEvent event) {
@@ -224,23 +242,19 @@ public class EventManagerController implements Initializable {
         }
     }
 
-
     @FXML
     void onDeleteEvent(ActionEvent actionEvent) {
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            // Confirmation before deletion
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this event?", ButtonType.YES, ButtonType.NO);
             Optional<ButtonType> result = confirmationAlert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.YES) {
-                // Remove the event from both the internal list and the observable list
+
                 events.remove(selectedEvent);
                 observableEvents.remove(selectedEvent);
 
-                // Rebind the observable list to the table view
                 eventTableView.setItems(observableEvents);
 
-                // Save the updated list of events to storage
                 saveEventsToStorage();
             }
         } else {
@@ -249,26 +263,31 @@ public class EventManagerController implements Initializable {
         }
     }
 
-
-
-
     @FXML
     void onChangeStatus(ActionEvent actionEvent) {
-        // Get the selected event from the TableView
         Event selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            // Access the current status using the JavaFX property
             EventStatus currentStatus = selectedEvent.statusProperty().get();
-            // Toggle status between ACTIVE and INACTIVE
-            EventStatus newStatus = (currentStatus == EventStatus.ACTIVE) ? EventStatus.INACTIVE : EventStatus.ACTIVE;
-            // Update the status using JavaFX property and plain value
+            EventStatus newStatus;
+
+            // Cycle through the statuses: ACTIVE → INACTIVE → CANCELLED → ACTIVE...
+            switch (currentStatus) {
+                case ACTIVE:
+                    newStatus = EventStatus.INACTIVE;
+                    break;
+                case INACTIVE:
+                    newStatus = EventStatus.CANCELLED;
+                    break;
+                case CANCELLED:
+                default:
+                    newStatus = EventStatus.ACTIVE;
+                    break;
+            }
+
             selectedEvent.statusProperty().set(newStatus);
-            selectedEvent.setStatusValue(newStatus);  // Update the plain value
+            selectedEvent.setStatusValue(newStatus);
 
-            // Refresh the table view to reflect the status change
             eventTableView.refresh();
-
-            // Save the updated events to storage
             saveEventsToStorage();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to change its status.", ButtonType.OK);
@@ -279,11 +298,10 @@ public class EventManagerController implements Initializable {
 
     public void saveEventsToStorage() {
         try {
-            // Convert JavaFX properties to plain values before saving
             for (Event event : events) {
-                event.extractToPlainValues();  // Extract to plain values for serialization
+                event.extractToPlainValues();
             }
-            // Save the list of events to storage
+
             EventStorage.saveEvents(events);
         } catch (IOException e) {
             e.printStackTrace();
@@ -294,14 +312,9 @@ public class EventManagerController implements Initializable {
 
     public void addEvent(Event event) {
         if (event != null) {
-            // Add the event to both internal lists
             events.add(event);
             observableEvents.add(event);
-
-            // Rebind the TableView with the updated list
-            eventTableView.setItems(observableEvents);  // Update TableView with new event
-
-            // Save the events list after adding
+            eventTableView.setItems(observableEvents);
             saveEventsToStorage();
         }
     }
@@ -311,58 +324,14 @@ public class EventManagerController implements Initializable {
             for (int i = 0; i < events.size(); i++) {
                 Event existingEvent = events.get(i);
                 if (existingEvent.equals(updatedEvent)) {
-                    // Update internal lists with the updated event
                     events.set(i, updatedEvent);
                     observableEvents.set(i, updatedEvent);
-                    eventTableView.setItems(observableEvents);  // Rebind TableView
-
-                    // Save the updated events to storage
+                    eventTableView.setItems(observableEvents);
                     saveEventsToStorage();
                     break;
                 }
             }
         }
-    }
-
-
-    /**
-     * Switch the view to display the selected event
-     * @param targetView The NewEventController view to be displayed
-     */
-    private void switchView(Node targetView) {
-        for (Node node : fxEventViews.getChildren()) {
-            node.setVisible(false); // Hide all event views
-        }
-        targetView.setVisible(true); // Show the target event view
-    }
-
-    /**
-     * Finds the NewEventController view associated with a specific event
-     * @param event The event to search for
-     * @return The NewEventController view associated with the event
-     */
-    private Optional<NewEventController> findViewForEvent(Event event) {
-        for (Node node : fxEventViews.getChildren()) {
-            if (((NewEventController) node).getEvent().equals(event)) {
-                return Optional.of((NewEventController) node);
-            }
-        }
-        return Optional.empty();
-    }
-
-
-    /**
-     * Finnur viðburð samkvæmt heiti viðburðar
-     * @param heiti heiti viðburðar
-     * @return viðburðurinn
-     */
-    private Optional<Event> finnaVidburd(String heiti) {
-        for (Event event : events) {
-            if (event.titleProperty().get().equals(heiti)) {
-                return Optional.of(event);
-            }
-        }
-        return Optional.empty();
     }
 
     /**

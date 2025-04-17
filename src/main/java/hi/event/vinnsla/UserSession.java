@@ -1,5 +1,14 @@
 package hi.event.vinnsla;
 
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  :
+ *
+ *
+ *****************************************************************************/
+
 public class UserSession {
     private static User loggedInUser;
 

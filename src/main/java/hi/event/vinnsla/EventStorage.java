@@ -7,51 +7,63 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/******************************************************************************
+ *  Author       : Ásdís Halldóra L Stefánsdóttir
+ *  Email        : ahl4@hi.is
+ *  Description  : Handles loading and saving {@link Event} objects to and from a JSON file.
+ *
+ *
+ *****************************************************************************/
 public class EventStorage {
 
     private static final String FILE_PATH = "events.json"; // Path to store events file
 
-    // Save events to a JSON file using JsonUtils
+    /**
+     * Saves a list of {@link Event} objects to a JSON file.
+     *
+     * @param events the list of events to be saved
+     * @throws IOException if an I/O error occurs during file writing
+     */
     public static void saveEvents(List<Event> events) throws IOException {
-        // Validate events before saving
         List<Event> validEvents = EventValidator.validateEvents(events);
 
         if (validEvents.isEmpty()) {
             System.err.println("No valid events to save.");
-            return;  // Exit early if no valid events are available
+            return;
         }
 
-        // Convert JavaFX properties to plain fields before serialization
         for (Event event : validEvents) {
-            event.extractToPlainValues();  // Ensure plain fields are populated
+            event.extractToPlainValues();
         }
 
         try {
-            // Use JsonUtils to save to file
             JsonUtils.writeEventsToFile(validEvents, FILE_PATH);
             System.out.println("Successfully saved valid events.");
         } catch (IOException e) {
             System.err.println("Error saving events to file: " + e.getMessage());
-            throw e; // Rethrow the exception after logging
+            throw e;
         }
     }
 
-    // Load events from a JSON file using JsonUtils
+
+
+    /**
+     * Loads a list of {@link Event} objects from a JSON file.
+     *
+     * @return a list of events loaded from the file, or an empty list if the file is missing or invalid
+     * @throws IOException if an I/O error occurs during file reading
+     */
     public static List<Event> loadEvents() throws IOException {
-        // Check if file exists before loading
         Path filePath = Paths.get(FILE_PATH);
         if (Files.exists(filePath)) {
             try {
-                // Try reading the events from the file
                 List<Event> events = JsonUtils.readEventsFromFile(FILE_PATH);
 
-                // If no valid events are read (i.e., the file is empty or invalid), return an empty list
                 if (events == null || events.isEmpty()) {
                     System.out.println("Events file is empty or corrupted, starting with an empty list.");
-                    return new ArrayList<>(); // Return an empty list if deserialization fails
+                    return new ArrayList<>();
                 }
 
-                // Populate JavaFX properties after loading
                 for (Event event : events) {
                     event.populateFromPlainValues();
                 }
@@ -59,11 +71,11 @@ public class EventStorage {
                 return events;
             } catch (IOException e) {
                 System.err.println("Error reading events from file: " + e.getMessage());
-                throw e; // Rethrow the exception after logging
+                throw e;
             }
         } else {
             System.out.println("No events file found, starting with an empty list.");
-            return new ArrayList<>(); // Return an empty list if the file doesn't exist
+            return new ArrayList<>();
         }
     }
 }

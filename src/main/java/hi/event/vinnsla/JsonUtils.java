@@ -10,6 +10,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  :
+ *
+ *
+ *****************************************************************************/
+
 public class JsonUtils {
 
     // Jackson ObjectMapper instance

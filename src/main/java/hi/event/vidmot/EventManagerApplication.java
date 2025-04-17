@@ -6,7 +6,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  : 
+ *
+ *
+ *****************************************************************************/
 public class EventManagerApplication extends Application {
 
     private static EventManagerController controller;
