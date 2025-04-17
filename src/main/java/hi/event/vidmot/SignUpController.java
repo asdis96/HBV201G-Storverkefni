@@ -75,6 +75,7 @@ public class SignUpController {
         alert.setTitle("Sign Up");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        EventManagerApplication.applyStylesheetToAlert(alert);
         alert.showAndWait();
     }
 

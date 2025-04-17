@@ -218,11 +218,6 @@
 .table-view .table-row-cell:filled:selected .table-cell {
     -fx-text-fill: #252427; /* Text color on selected row */
 }
-
-.scroll-pane{
-    -fx-background-color: 252427;
-}
-
 /* The main combo box for sort etc*/
 .combo-box {
     -fx-background-color: #252427;
@@ -284,72 +279,54 @@
     -fx-fill: #CBCBCB; /* Correct way to set prompt text color */
 }
 
-#fxHoursSpinner .arrow-button,
-#fxMinutesSpinner .arrow-button {
-    -fx-background-color: #4A3931; /* Green background for the buttons */
-    -fx-border-color: #4A3931;     /* Darker green border */
-    -fx-text-fill: white;           /* White text (for up/down arrows) */
-    -fx-shape: "M0,0 L1,0 L0.5,1 Z"; /* Triangle shape (for up/down arrow) */
-}
 
-#fxHoursSpinner .arrow-button:hover,
-#fxMinutesSpinner .arrow-button:hover {
-    -fx-background-color: #4A3931;  /* Darker green background on hover */
-    -fx-border-color: #4A3931;      /* Even darker border on hover */
-}
-#fxHoursSpinner:focused,
-#fxMinutesSpinner:focused {
-    -fx-background-color: #4A3931;  /* Yellow background when focused */
-    -fx-border-color: #4A3931;      /* Yellow border when focused */
-    -fx-border-width: 1;             /* Thicker border when focused */
-}
-
-
-/* Dark Theme Alert Styles */
 .alert {
-    -fx-background-color: #252427; /* Dark background */
-    -fx-border-color: #555555; /* Darker border */
-    -fx-border-width: 1px;
-    -fx-font-size: 14px;
-}
-
-.alert .header-panel {
-    -fx-background-color: #444444; /* Dark header background */
+    -fx-background-color: #252427; /* dark background */
 }
 
 .alert .content {
-    -fx-text-fill: #ffffff; /* White text for content */
+    -fx-text-fill: #ffffff; /* white content text */
 }
 
-.alert .button-bar .button {
-    -fx-background-color: #9A7B6C; /* light beige button background */
-    -fx-text-fill: white;
+.alert .header-panel .label {
+    -fx-text-fill: #ffffff; /* white header text */
 }
 
-.alert .button-bar .button:hover {
-    -fx-background-color: #9A7B6C; /* light beige  on hover */
-}
 
 .dialog{
     -fx-background-color: #252427;
 
 }
 
-
 .new-event-main {
     -fx-background-color: #252427;
 
 }
-#fxeventContent{
-    -fx-background-color: #252427;
+
+.separator {
+    -fx-background-color: #373539;
+    -fx-border-color: #373539;
 }
-#fxscrollPane{
+
+/* Apply background to the ScrollPane */
+.scroll-pane {
+    -fx-background: #252427;
+    -fx-border-color: #373539;
+    -fx-border-radius: 4px;
+}
+
+.scroll-pane > .viewport {
     -fx-background-color: #252427;
 }
 
-.separator {
-    -fx-background-color: #373539;  /* Set color */
-    -fx-border-color: #373539;      /* Set border color (optional) */
+
+.scroll-pane .thumb {
+    -fx-background-color: #CBCBCB;
 }
+
+.scroll-pane .track {
+    -fx-background-color: #373539;
+}
+
 
 

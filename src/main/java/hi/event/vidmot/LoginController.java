@@ -100,6 +100,7 @@ public class LoginController {
         alert.setTitle("Login Failed");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        EventManagerApplication.applyStylesheetToAlert(alert);
         alert.showAndWait();
     }
 }

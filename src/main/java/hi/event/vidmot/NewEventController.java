@@ -314,6 +314,7 @@ public class NewEventController extends VBox {
                 alert.setTitle("Event Saved");
                 alert.setHeaderText("Event saved successfully!");
                 alert.setContentText("Your event has been saved.");
+                EventManagerApplication.applyStylesheetToAlert(alert);
                 alert.showAndWait();
 
                 if (controller != null) {
@@ -334,6 +335,7 @@ public class NewEventController extends VBox {
         alert.setTitle("Error");
         alert.setHeaderText("Something went wrong");
         alert.setContentText(message);
+        EventManagerApplication.applyStylesheetToAlert(alert);
         alert.showAndWait();
     }
 
@@ -352,6 +354,7 @@ public class NewEventController extends VBox {
         ButtonType buttonTypeYes = new ButtonType("Yes");
         ButtonType buttonTypeNo = new ButtonType("No");
         alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+        EventManagerApplication.applyStylesheetToAlert(alert);
 
         alert.showAndWait().ifPresent(response -> {
             if (response == buttonTypeYes) {

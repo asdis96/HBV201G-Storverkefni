@@ -1,12 +1,11 @@
 package hi.event.vidmot;
 
 import hi.event.vinnsla.Event;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
@@ -44,6 +43,10 @@ public class EventView extends Dialog<Event> {
     @FXML
     private VBox mediaView;  // The VBox that holds MediaController's content
 
+    @FXML
+    private ScrollPane scrollPane;
+
+
     private Event event;
     private MediaController mediaController;
 
@@ -60,6 +63,16 @@ public class EventView extends Dialog<Event> {
         try {
             DialogPane pane = loader.load();
             this.setDialogPane(pane);
+
+            // Apply theme to the dialog's scene
+            Platform.runLater(() -> {
+                Scene scene = this.getDialogPane().getScene();
+                if (scene != null) {
+                    String currentTheme = EventManagerApplication.getTheme();
+                    scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
+                }
+            });
+
         } catch (IOException e) {
             throw new RuntimeException("Failed to load EventView FXML", e);
         }
@@ -74,10 +87,8 @@ public class EventView extends Dialog<Event> {
 
         populateFields();
         setOnCloseRequest(closeEvent -> stopMediaPlayback());
-
-
-
     }
+
 
     /**
      * Populates the fields in the EventView dialog with event data.

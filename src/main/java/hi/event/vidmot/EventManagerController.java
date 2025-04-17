@@ -237,12 +237,19 @@ public class EventManagerController implements Initializable {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to load event details for editing.", ButtonType.OK);
+                // Apply the current theme to the alert
+                EventManagerApplication.applyStylesheetToAlert(alert);
+                alert.showAndWait();
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to edit.", ButtonType.OK);
+            // Apply the current theme to the alert
+            EventManagerApplication.applyStylesheetToAlert(alert);
             alert.showAndWait();
         }
     }
+
 
     @FXML
     void onDeleteEvent(ActionEvent actionEvent) {
@@ -259,11 +266,16 @@ public class EventManagerController implements Initializable {
 
                 saveEventsToStorage();
             }
+            // Apply the current theme to the alert
+            EventManagerApplication.applyStylesheetToAlert(confirmationAlert);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to delete.", ButtonType.OK);
+            // Apply the current theme to the alert
+            EventManagerApplication.applyStylesheetToAlert(alert);
             alert.showAndWait();
         }
     }
+
 
     @FXML
     void onChangeStatus(ActionEvent actionEvent) {
@@ -291,9 +303,12 @@ public class EventManagerController implements Initializable {
             saveEventsToStorage();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to change its status.", ButtonType.OK);
+            // Apply the current theme to the alert
+            EventManagerApplication.applyStylesheetToAlert(alert);
             alert.showAndWait();
         }
     }
+
 
 
     public void saveEventsToStorage() {

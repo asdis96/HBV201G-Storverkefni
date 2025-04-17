@@ -117,6 +117,10 @@ public class MenuController {
             alert.setTitle("Account Information");
             alert.setHeaderText("Logged-In User Information");
             alert.setContentText(userInfo);
+
+            // Apply the current theme to the alert
+            EventManagerApplication.applyStylesheetToAlert(alert);
+
             alert.showAndWait();
         } else {
             // If no user is logged in
@@ -124,9 +128,14 @@ public class MenuController {
             alert.setTitle("Account Settings");
             alert.setHeaderText("Error");
             alert.setContentText("No user is currently logged in.");
+
+            // Apply the current theme to the alert
+            EventManagerApplication.applyStylesheetToAlert(alert);
+
             alert.showAndWait();
         }
     }
+
 
     @FXML
     public void onLogout(ActionEvent actionEvent) {

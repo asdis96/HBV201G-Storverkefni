@@ -1,8 +1,10 @@
 package hi.event.vidmot;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -103,4 +105,16 @@ public class EventManagerApplication extends Application {
     public static EventManagerApplication getApplicationInstance() {
         return instance;
     }
+
+    // Method to apply theme to alerts
+    public static void applyStylesheetToAlert(Alert alert) {
+        Platform.runLater(() -> {
+            if (alert.getDialogPane() != null && alert.getDialogPane().getScene() != null) {
+                String currentTheme = getTheme();
+                alert.getDialogPane().getScene().getStylesheets().add(
+                        EventManagerApplication.class.getResource(currentTheme).toExternalForm());
+            }
+        });
+    }
+
 }
