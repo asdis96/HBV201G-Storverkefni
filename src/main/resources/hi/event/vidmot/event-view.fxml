@@ -10,17 +10,17 @@
 
 <!-- event view -->
 
-<DialogPane fx:id="eventContent" prefHeight="640.0" prefWidth="690.0" style="-fx-padding: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane fx:id="eventContent" prefHeight="640.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Scrollable content -->
     <content>
-        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="380.0" minWidth="560.0" prefHeight="640.0" prefWidth="690.0">
+        <ScrollPane fx:id="scrollPane" styleClass="scroll-pane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="380.0" minWidth="560.0" prefHeight="640.0" prefWidth="690.0">
             <VBox spacing="15">
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
                       <!-- Event Title -->
-                      <Label fx:id="fxTitle" alignment="CENTER" prefHeight="20.0" prefWidth="524.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Event Title " textAlignment="CENTER" />
-      
+                      <Label fx:id="fxTitle" styleClass="header" alignment="CENTER" prefHeight="20.0" prefWidth="524.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Event Title " textAlignment="CENTER" />
+
                             <!-- Event Image (if exists) -->
                       <ImageView fx:id="fxImage" fitHeight="250.0" fitWidth="350.0" preserveRatio="true" />
                </children>
@@ -57,7 +57,7 @@
                 </HBox>
 
                 <!-- Event Description -->
-                <Label fx:id="fxDescription" prefWidth="500.0" style="-fx-font-size: 14px;" text="Description">
+                <Label fx:id="fxDescription" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="500.0" style="-fx-font-size: 14px;" text="Description">
                     <VBox.margin>
                         <Insets left="20.0" top="10.0" />
                     </VBox.margin>

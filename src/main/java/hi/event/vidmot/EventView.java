@@ -66,13 +66,6 @@ public class EventView extends Dialog<Event> {
 
         loadMediaViewController();
 
-        if (referenceRegion != null) {
-            this.getDialogPane().setPrefWidth(referenceRegion.getWidth() * 0.9);
-            this.getDialogPane().setPrefHeight(referenceRegion.getHeight() * 0.9);
-        } else {
-            this.getDialogPane().setPrefWidth(690);
-            this.getDialogPane().setPrefHeight(640);
-        }
         this.getDialogPane().setMaxWidth(700);
         this.getDialogPane().setMaxHeight(650);
 
@@ -81,6 +74,8 @@ public class EventView extends Dialog<Event> {
 
         populateFields();
         setOnCloseRequest(closeEvent -> stopMediaPlayback());
+
+
 
     }
 

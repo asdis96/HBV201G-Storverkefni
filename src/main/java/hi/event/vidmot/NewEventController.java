@@ -1,10 +1,12 @@
 package hi.event.vidmot;
 
 import hi.event.vinnsla.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +21,7 @@ import javafx.util.StringConverter;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,7 +38,8 @@ import java.util.List;
  *****************************************************************************/
 
 public class NewEventController extends VBox {
-
+    @FXML
+    private HBox fxMainView;
     @FXML
     private DatePicker fxDate;
     @FXML
@@ -113,6 +117,53 @@ public class NewEventController extends VBox {
         if (!isNewEvent) {
             populateFormWithEventDetails();
         }
+
+        // Delay stylesheet application until scene is available
+        Platform.runLater(() -> {
+            Scene scene = fxMainView.getScene();
+            if (scene != null) {
+                String currentTheme = EventManagerApplication.getTheme();
+                scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
+            }
+        });
+    }
+
+    private void setUpTimeSpinner() {
+        // Set up the hour spinner with a range from 0 to 23 and default to current hour
+        fxHoursSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, LocalTime.now().getHour()));
+
+        // Set up the minute spinner with a range from 0 to 59 and default to current minute
+        fxMinutesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, LocalTime.now().getMinute()));
+
+        // Listener for the hour spinner - when it changes, update the event time
+        fxHoursSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
+
+        // Listener for the minute spinner - when it changes, update the event time
+        fxMinutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
+
+        // Listener for changes in event's time - update both spinners when time changes
+        event.timeProperty().addListener((obs, oldTime, newTime) -> updateSpinners(newTime));
+
+        // Set initial values for the spinners based on event time
+        updateSpinners(LocalTime.now());
+    }
+
+    private void updateEventTime() {
+        // Update the event's time based on the selected hour and minute
+        LocalTime selectedTime = LocalTime.of(fxHoursSpinner.getValue(), fxMinutesSpinner.getValue());
+        event.timeProperty().set(selectedTime);
+    }
+
+    private void updateSpinners(LocalTime time) {
+        // Set the spinner values based on the event's time
+        fxHoursSpinner.getValueFactory().setValue(time.getHour());
+        fxMinutesSpinner.getValueFactory().setValue(time.getMinute());
+    }
+
+
+
+    private void initializeFileChoosers() {
+        fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif", "*.bmp"));
     }
 
     private void formatDatePicker(DatePicker datePicker) {
@@ -131,29 +182,6 @@ public class NewEventController extends VBox {
         });
     }
 
-    private void initializeFileChoosers() {
-        fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif", "*.bmp"));
-    }
-
-    private void setUpTimeSpinner() {
-        fxHoursSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, LocalTime.now().getHour()));
-        fxHoursSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
-        fxMinutesSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, LocalTime.now().getMinute()));
-        fxMinutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
-        event.timeProperty().addListener((obs, oldTime, newTime) -> updateSpinners(newTime));
-        updateSpinners(LocalTime.now());
-    }
-
-    private void updateEventTime() {
-        LocalTime selectedTime = LocalTime.of(fxHoursSpinner.getValue(), fxMinutesSpinner.getValue());
-        event.timeProperty().set(selectedTime);
-    }
-
-    private void updateSpinners(LocalTime time) {
-        fxHoursSpinner.getValueFactory().setValue(time.getHour());
-        fxMinutesSpinner.getValueFactory().setValue(time.getMinute());
-    }
-
     private void populateFormWithEventDetails() {
         fxTitle.textProperty().bindBidirectional(event.titleProperty());
         fxGroup.valueProperty().bindBidirectional(event.groupProperty());
@@ -165,19 +193,38 @@ public class NewEventController extends VBox {
         fxDescription.textProperty().bindBidirectional(event.descriptionProperty());
         fxStatus.getSelectionModel().select(event.statusProperty().get());
 
-        if (event.imageMediaPathProperty().get() != null) {
-            String imagePath = event.imageMediaPathProperty().get();
-            Image image = new Image(getClass().getResource(imagePath).toExternalForm());
-            fxImage.setImage(image);
+        String imagePath = event.imageMediaPathProperty().get();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            try {
+                URL imageUrl = getClass().getResource(imagePath);
+                if (imageUrl != null) {
+                    Image image = new Image(imageUrl.toExternalForm());
+                    fxImage.setImage(image);
+                    event.imageMediaProperty().set(image);
+                } else {
+                    System.out.println("Image not found: " + imagePath);
+                }
+            } catch (Exception e) {
+                System.out.println("Error loading image: " + e.getMessage());
+            }
         }
 
-        if (event.videoMediaPathProperty().get() != null) {
-            String videoPath = event.videoMediaPathProperty().get();
-            Media media = new Media(getClass().getResource(videoPath).toExternalForm());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            fxMediaView.setMediaPlayer(mediaPlayer);
-            mediaPlayer.play();
+
+        String videoPath = event.videoMediaPathProperty().get();
+        if (videoPath != null && !videoPath.isEmpty()) {
+            try {
+                URL mediaUrl = getClass().getResource(videoPath);
+                if (mediaUrl != null) {
+                    Media media = new Media(mediaUrl.toExternalForm());
+                    loadMediaViewController(media);
+                } else {
+                    System.out.println("Video not found: " + videoPath);
+                }
+            } catch (Exception e) {
+                System.out.println("Error loading video: " + e.getMessage());
+            }
         }
+
     }
 
 

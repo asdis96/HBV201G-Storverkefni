@@ -1,0 +1,355 @@
+.root {
+    -fx-background-color: #252427; /* Dark gray */
+    -fx-text-fill: #CBCBCB; /* Light grey text */
+    -fx-font-family: "PT Serif","Segoe UI", "Helvetica Neue", sans-serif;
+}
+/*     General      */
+.label, .text-field, .text-area, .combo-box, .table-view, .menu-bar, .button, .date-picker, .spinner {
+    -fx-font-size: 14px;
+    -fx-text-fill: #CBCBCB; /* Light grey text */
+}
+
+.text-field, .text-area, .combo-box, .date-picker {
+    -fx-background-color: #252427;/*dark grey*/
+    -fx-border-color: #373539; /*medium grey*/
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
+
+/* Header */
+.header {
+    -fx-text-fill: #9A7B6C; /* Medium brown for header text */
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-font-family: "PT Serif";
+}
+
+/* General Buttons */
+.button {
+    -fx-background-color: #373539; /* medium grey button background */
+    -fx-border-color: #CBCBCB; /* Slightly lighter grey for borders */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-width: 0.5;
+    -fx-padding: 8 16;
+    -fx-text-fill: CBCBCB;
+}
+
+.button:hover {
+    -fx-background-color: #CBCBCB;
+    -fx-text-fill: #252427;
+}
+
+/*       Login  and Sign up styling       */
+
+.login-root{
+    -fx-background-color: #252427;
+
+}
+.login-main {
+    -fx-background-color: #252427;
+}
+
+.login-label {
+    -fx-font-family: "PT Serif";
+    -fx-font-size: 16px;
+    -fx-text-fill: #4A3931;
+}
+.login-button{
+    -fx-background-color: #9A7B6C;
+    -fx-border-radius: 5;
+    -fx-border-width: 0.5;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+}
+.login-button:hover {
+    -fx-background-color: #f3ebe5;
+    -fx-text-fill: #252427;
+}
+.hyperlink {
+    -fx-text-fill: #d2b4b4;
+    -fx-underline: true;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #e8d9d9; /* liiiiight rosybrown */
+    -fx-cursor: hand;
+}
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #9A7B6C; /* light brown outline on focus */
+    -fx-border-width: 2px;
+    -fx-background-color: #252427;
+    -fx-text-fill: #CBCBCB;
+    -fx-background-insets: 0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/*      Sidebar Button       */
+.sidebar-buttons > .button {
+    -fx-background-color: transparent;
+    -fx-font-family: "PT Serif";
+    -fx-text-fill: #EBDED4;
+    -fx-font-size: 18px;
+    -fx-border-width: 0;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.sidebar-buttons Button:hover {
+    -fx-text-fill: #EBDED4; /* sand text on hover */
+    -fx-cursor: hand;
+}
+
+.sidebar-buttons Button:pressed {
+    -fx-font-weight: bold;
+}
+
+.sidebar-buttons Button:focused {
+    -fx-text-fill: #373539; /* Medium grey for focused state */
+}
+
+/*      Menu Bar    */
+.menu-bar {
+    -fx-background-color: #252427;
+    -fx-border-color: #9A7B6C;
+    -fx-border-width: 0 0 1 0;
+}
+.menu-bar .menu:hover {
+    -fx-background-color: #373539;
+}
+
+.menu-bar .menu:hover .label {
+    -fx-text-fill: #ffffff; /* Hover text color */
+}
+
+.context-menu {
+    -fx-background-color: #252427; /* Background of dropdown menu */
+    -fx-border-color: #CBCBCB;     /* Optional border */
+}
+
+.context-menu .menu-item {
+    -fx-background-color: transparent; /* Default background */
+    -fx-text-fill: #CBCBCB;            /* Default text color */
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #4a4a4a;  /* Hover effect */
+    -fx-text-fill: #ffffff;         /* Text on hover */
+}
+
+
+/* Table View */
+.table-view {
+    -fx-background-color: #252427;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: #373539;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px;
+    -fx-text-fill: white;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #373539; /* medium gray */
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #252427;   /* Dark row background */
+    -fx-text-fill: white;
+}
+
+/* Individual cells */
+.table-view .table-cell {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-background-color: transparent;
+}
+
+.table-view .table-row-cell:filled:selected {
+    -fx-background-color: #CBCBCB;  /* light gray */
+    -fx-text-fill: #252427; /* dark gray */
+    -fx-table-cell-border-color: #373539;
+}
+/* Base checkbox box styling */
+.table-view .check-box .box {
+    -fx-background-color: transparent;
+    -fx-border-color: #CBCBCB;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* Selected checkbox background (checked state) */
+.table-view .check-box:selected .box {
+    -fx-background-color: #252427;
+    -fx-border-color: #CBCBCB;
+}
+
+/* Remove blue focus ring */
+.table-view .check-box:focused .box {
+    -fx-background-insets: 0;
+    -fx-border-color: #CBCBCB;
+    -fx-effect: none;
+
+}
+.table-view .column-header {
+    -fx-background-color: #252427; /* Background color for header */
+    -fx-border-color: #373539;     /* Optional: Border around header */
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #CBCBCB;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "PT Serif";
+}
+
+.table-view .column-header-background {
+    -fx-border-color: #444444;
+    -fx-border-width: 0 0 1 0; /* bottom border only */
+}
+
+.table-view .table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: #252427; /* Text color on selected row */
+}
+
+.scroll-pane{
+    -fx-background-color: 252427;
+}
+
+/* The main combo box for sort etc*/
+.combo-box {
+    -fx-background-color: #252427;
+    -fx-border-color: #373539;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 14px;
+}
+.combo-box .cell {
+    -fx-text-fill: #CBCBCB;
+}
+
+/* The arrow button  */
+.combo-box .arrow-button {
+    -fx-background-color: #CBCBCB;
+    -fx-border-radius: 0 4 4 0;
+}
+
+/* The dropdown popup */
+.combo-box-popup .list-view {
+    -fx-background-color: #373539;
+    -fx-border-color: #CBCBCB;
+}
+
+/* The dropdown items */
+.combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #CBCBCB;
+    -fx-padding: 6 12;
+}
+
+/* Hover effect on dropdown items */
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: #ffffff;
+}
+
+/* Selected item in dropdown */
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #CBCBCB;
+    -fx-text-fill: #252427;
+}
+
+#fxDescription {
+    -fx-background-color: #252427;
+    -fx-border-color: #373539;      /* Light border color */
+    -fx-border-radius: 5;           /* Optional: rounded corners */
+    -fx-padding: 10;                /* Optional: padding inside the TextArea */
+}
+
+.text-area {
+    -fx-control-inner-background: #252427;  /* Dark background */
+    -fx-text-fill: #ffffff;  /* White text */
+    -fx-font-size: 14px;
+}
+.text-field .prompt-text,
+.password-field .prompt-text,
+.text-area .prompt-text {
+    -fx-fill: #CBCBCB; /* Correct way to set prompt text color */
+}
+
+#fxHoursSpinner .arrow-button,
+#fxMinutesSpinner .arrow-button {
+    -fx-background-color: #4A3931; /* Green background for the buttons */
+    -fx-border-color: #4A3931;     /* Darker green border */
+    -fx-text-fill: white;           /* White text (for up/down arrows) */
+    -fx-shape: "M0,0 L1,0 L0.5,1 Z"; /* Triangle shape (for up/down arrow) */
+}
+
+#fxHoursSpinner .arrow-button:hover,
+#fxMinutesSpinner .arrow-button:hover {
+    -fx-background-color: #4A3931;  /* Darker green background on hover */
+    -fx-border-color: #4A3931;      /* Even darker border on hover */
+}
+#fxHoursSpinner:focused,
+#fxMinutesSpinner:focused {
+    -fx-background-color: #4A3931;  /* Yellow background when focused */
+    -fx-border-color: #4A3931;      /* Yellow border when focused */
+    -fx-border-width: 1;             /* Thicker border when focused */
+}
+
+
+/* Dark Theme Alert Styles */
+.alert {
+    -fx-background-color: #252427; /* Dark background */
+    -fx-border-color: #555555; /* Darker border */
+    -fx-border-width: 1px;
+    -fx-font-size: 14px;
+}
+
+.alert .header-panel {
+    -fx-background-color: #444444; /* Dark header background */
+}
+
+.alert .content {
+    -fx-text-fill: #ffffff; /* White text for content */
+}
+
+.alert .button-bar .button {
+    -fx-background-color: #9A7B6C; /* light beige button background */
+    -fx-text-fill: white;
+}
+
+.alert .button-bar .button:hover {
+    -fx-background-color: #9A7B6C; /* light beige  on hover */
+}
+
+.dialog{
+    -fx-background-color: #252427;
+
+}
+
+
+.new-event-main {
+    -fx-background-color: #252427;
+
+}
+#fxeventContent{
+    -fx-background-color: #252427;
+}
+#fxscrollPane{
+    -fx-background-color: #252427;
+}
+
+.separator {
+    -fx-background-color: #373539;  /* Set color */
+    -fx-border-color: #373539;      /* Set border color (optional) */
+}
+
+

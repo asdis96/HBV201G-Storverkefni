@@ -7,10 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +23,12 @@ import java.io.IOException;
  *****************************************************************************/
 
 public class MenuController {
+
+    @FXML
+    public RadioMenuItem fxLightMode;
+    @FXML
+    public RadioMenuItem fxDarkMode;
+    public ToggleGroup theme;
 
     /**
      * Quits the program
@@ -58,12 +62,35 @@ public class MenuController {
 
     /**
      * Set color scheme for the app
-     * @param event Action event for changing color
+     * @param event Action event for changing theme
      */
     @FXML
-    void onSetColor(ActionEvent event) {
-        getEventManagerController().breytaLit((RadioMenuItem) event.getSource());
+    public void onSetColor(ActionEvent event) {
+        RadioMenuItem selected = (RadioMenuItem) event.getSource();
+
+        String themePath;
+        if (selected.getText().equals("Dark mode")) {
+            themePath = "/hi/event/vidmot/css/dark-mode.css";
+        } else {
+            themePath = "/hi/event/vidmot/css/light-mode.css";
+        }
+
+        // Set the theme globally
+        EventManagerApplication.setTheme(themePath);
+
+        // Apply it to the current scene
+        Scene scene = selected.getParentPopup().getOwnerWindow().getScene();
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add(getClass().getResource(themePath).toExternalForm());
+
+        // 🆕 Apply theme-specific logo in LoginController
+        Stage stage = (Stage) scene.getWindow();
+        if (stage.getScene().getRoot().getUserData() instanceof LoginController loginController) {
+            loginController.applyTheme(themePath);
+        }
+
     }
+
 
     /**
      * Open Account settings window and display logged-in user's info
@@ -114,24 +141,30 @@ public class MenuController {
         }
     }
 
-
-    private void clearUserSession() {
-        UserSession.setLoggedInUser(null); // Assuming you have a method to set the logged-in user to null
-        System.out.println("User session cleared.");
-    }
-
     private void switchToLoginScreen() throws IOException {
+        // Load the login screen FXML
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
+        // Get the current theme path (light or dark mode)
+        String currentTheme = EventManagerApplication.getTheme(); // Get the theme set in the app
+
+        // Apply the current theme to the login scene
+        scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm()); // Apply the theme
+
+        // Set the application reference in the controller
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setApplication(EventManagerApplication.getApplicationInstance()); // Ensure correct app reference
+
+        // Apply the correct logo based on the theme
+        loginController.applyTheme(currentTheme); // Update logo as per theme (light/dark)
+
         // Show the login screen
         Stage stage = new Stage();
-        stage.setTitle("Login - Event Manager");
+        stage.setTitle("Login");
         stage.setScene(scene);
         stage.show();
     }
-
-
 
     // Private methods
 

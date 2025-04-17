@@ -18,6 +18,9 @@
 
     <!-- Button Bar with Close Button -->
     <ButtonBar>
-        <Button fx:id="closeButton" text="Close" style="-fx-pref-width: 100px; -fx-text-fill: white; -fx-background-color: #f44336;" />
+        <buttons>
+            <Button fx:id="closeButton" text="Close"
+                    style="-fx-pref-width: 100px; -fx-text-fill: white; -fx-background-color: #f44336;" />
+        </buttons>
     </ButtonBar>
 </VBox>

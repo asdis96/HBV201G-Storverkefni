@@ -79,8 +79,10 @@ public class EventManagerController implements Initializable {
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
         initializeTableColumns();
-       loadEventsFromStorage();
+        loadEventsFromStorage();
         setupSearchFilter();
         setupSortComboBox();
         setupProcessButton();
@@ -114,9 +116,9 @@ public class EventManagerController implements Initializable {
     private void setupSortComboBox() {
         sortComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                if (newVal.equals("Title A–Z")) {
+                if (newVal.equals("Sort by A–Z")) {
                     titleColumn.setSortType(TableColumn.SortType.ASCENDING);
-                } else if (newVal.equals("Title Z–A")) {
+                } else if (newVal.equals("Sort by Z–A")) {
                     titleColumn.setSortType(TableColumn.SortType.DESCENDING);
                 }
                 eventTableView.getSortOrder().clear();
@@ -124,7 +126,7 @@ public class EventManagerController implements Initializable {
             }
         });
 
-        sortComboBox.getSelectionModel().select("Title A–Z");
+        sortComboBox.getSelectionModel().select("Sort by A–Z");
     }
 
     private void setupProcessButton() {
@@ -270,7 +272,6 @@ public class EventManagerController implements Initializable {
             EventStatus currentStatus = selectedEvent.statusProperty().get();
             EventStatus newStatus;
 
-            // Cycle through the statuses: ACTIVE → INACTIVE → CANCELLED → ACTIVE...
             switch (currentStatus) {
                 case ACTIVE:
                     newStatus = EventStatus.INACTIVE;
@@ -286,7 +287,6 @@ public class EventManagerController implements Initializable {
 
             selectedEvent.statusProperty().set(newStatus);
             selectedEvent.setStatusValue(newStatus);
-
             eventTableView.refresh();
             saveEventsToStorage();
         } else {
@@ -334,26 +334,33 @@ public class EventManagerController implements Initializable {
         }
     }
 
-    /**
-     * Ekki hluti af verkefni en sýnt hér til fróðleiks
-     *
-     * @param source
-     */
-    public void breytaLit(RadioMenuItem source) {
-        System.out.println(source.getText());
-        // athuga
-        if (source.getText().equals("Svartur")) {
-            fxEventViews.getStyleClass().remove("hvitur");
-            fxEventViews.getStyleClass().remove("svartLetur");
-            fxEventViews.getStyleClass().add(source.getText().toLowerCase());
-            fxEventViews.getStyleClass().add("hvittLetur");
-        }
-        else if (source.getText().equals("Hvítur")) {
-            fxEventViews.getStyleClass().remove("svartur");
-            fxEventViews.getStyleClass().remove("hvittLetur");
-            fxEventViews.getStyleClass().add("svartLetur");
-            fxEventViews.getStyleClass().add("hvitur");
+    public void changeTheme(RadioMenuItem selectedThemeItem) {
+        // Remove old stylesheets
+        root.getStylesheets().clear();
+
+        // Add new stylesheet based on selection
+        if (selectedThemeItem.getId().equals("fxDarkMode")) {
+            root.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+        } else if (selectedThemeItem.getId().equals("fxLightMode")) {
+            root.getStylesheets().add(getClass().getResource("/css/light-mode.css").toExternalForm());
         }
     }
 
+    public void breytaLit(RadioMenuItem source) {
+        System.out.println(source.getText());
+        // athuga
+        if (source.getText().equals("Dark Mode")) {
+            fxEventViews.getStyleClass().remove("");
+            fxEventViews.getStyleClass().remove("");
+            fxEventViews.getStyleClass().add(source.getText().toLowerCase());
+            fxEventViews.getStyleClass().add("");
+        } else if (source.getText().equals("Light Mode")) {
+            fxEventViews.getStyleClass().remove("");
+            fxEventViews.getStyleClass().remove("");
+            fxEventViews.getStyleClass().add("");
+            fxEventViews.getStyleClass().add("");
+
+
+        }
+    }
 }

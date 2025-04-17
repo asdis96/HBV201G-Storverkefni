@@ -10,7 +10,7 @@ import java.io.IOException;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  : 
+ *  Description  :
  *
  *
  *****************************************************************************/
@@ -18,15 +18,36 @@ public class EventManagerApplication extends Application {
 
     private static EventManagerController controller;
 
+    private static EventManagerApplication instance;
+
+
+    // Default theme path (light mode)
+    private static String currentTheme = "/hi/event/vidmot/css/light-mode.css";
+
+    public static void setTheme(String themePath) {
+        currentTheme = themePath;
+    }
+
+    public static String getTheme() {
+        return currentTheme;
+    }
+
+
     @Override
     public void start(Stage stage) throws IOException {
         // Load the login view first
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
-        // Set the application reference (if needed)
+        // Apply current theme to login scene
+        scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
+
+        // Set the application reference in the controller
         LoginController loginController = fxmlLoader.getController();
         loginController.setApplication(this);
+
+        // Apply the correct theme-specific logo
+        loginController.applyTheme(currentTheme);
 
         // Show login screen
         stage.setTitle("Login - Event Manager");
@@ -34,21 +55,21 @@ public class EventManagerApplication extends Application {
         stage.show();
     }
 
+
     /**
      * Switch to the EventManager view after a successful login
      */
     public void switchToEventManager() throws IOException {
-        // Load the EventManager view (main screen)
+        instance = this;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/eventmanager-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
-        // Get the EventManagerController
-        EventManagerController eventManagerController = fxmlLoader.getController();
+        // Apply current theme
+        scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
 
-        // Set the controller using the setter
+        EventManagerController eventManagerController = fxmlLoader.getController();
         setController(eventManagerController);
 
-        // Now switch to the EventManager view
         Stage stage = new Stage();
         stage.setTitle("Event Manager");
         stage.setScene(scene);
@@ -76,5 +97,10 @@ public class EventManagerApplication extends Application {
      */
     public static void main(String[] args) {
         launch();
+    }
+
+    // Static method to get the instance of the application
+    public static EventManagerApplication getApplicationInstance() {
+        return instance;
     }
 }

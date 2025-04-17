@@ -3,17 +3,21 @@ package hi.event.vidmot;
 import hi.event.vinnsla.User;
 import hi.event.vinnsla.UserSession;
 import hi.event.vinnsla.UserStorage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class LoginController {
-
+    @FXML
+    public ImageView logoImage;
     @FXML
     private TextField usernameField;
 
@@ -34,6 +38,15 @@ public class LoginController {
 
     public void setApplication(EventManagerApplication application) {
         this.application = application;
+    }
+
+    public void applyTheme(String themePath) {
+        String logoPath = themePath.contains("dark")
+                ? "/hi/event/vidmot/media/dark-logo.jpg"
+                : "/hi/event/vidmot/media/light-logo.jpg"
+                ;
+
+        logoImage.setImage(new Image(getClass().getResource(logoPath).toExternalForm()));
     }
 
     @FXML
@@ -79,6 +92,7 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private void showAlert(String message) {

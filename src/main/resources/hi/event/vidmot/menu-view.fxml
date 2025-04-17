@@ -2,9 +2,13 @@
 
 <?import javafx.scene.control.*?>
 
-<!-- Viðmótið fyrir menu-inn -->
-
+<!-- Menu UI -->
 <MenuBar xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.MenuController">
+
+    <fx:define>
+        <ToggleGroup fx:id="theme" />
+    </fx:define>
+
     <menus>
         <Menu mnemonicParsing="false" text="File">
             <items>
@@ -13,16 +17,24 @@
                 <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
             </items>
         </Menu>
+
         <Menu mnemonicParsing="false" text="View">
             <items>
-                <RadioMenuItem fx:id="fxSvartur" mnemonicParsing="false" onAction="#onSetColor" selected="false" text="Svartur">
-                    <toggleGroup>
-                        <ToggleGroup fx:id="bakgrunnur" />
-                    </toggleGroup>
-                </RadioMenuItem>
-                <RadioMenuItem fx:id="fxHvitur" mnemonicParsing="false" onAction="#onSetColor" selected="true" text="Hvítur" toggleGroup="$bakgrunnur" />
+                <RadioMenuItem fx:id="fxLightMode"
+                               mnemonicParsing="false"
+                               onAction="#onSetColor"
+                               selected="true"
+                               text="Light mode"
+                               toggleGroup="$theme" />
+                <RadioMenuItem fx:id="fxDarkMode"
+                               mnemonicParsing="false"
+                               onAction="#onSetColor"
+                               selected="false"
+                               text="Dark mode"
+                               toggleGroup="$theme" />
             </items>
         </Menu>
+
         <Menu mnemonicParsing="false" text="Help">
             <items>
                 <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About" />

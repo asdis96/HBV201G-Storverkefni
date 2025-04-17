@@ -2,37 +2,44 @@
 
 <!-- eventmanager-view.fxml -->
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" prefHeight="700.0" prefWidth="900.0" stylesheets="@eventmanager.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
+<BorderPane fx:id="root" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.EventManagerController">
     <!-- Top section (Menu) -->
     <top>
         <fx:include source="menu-view.fxml" />
-
     </top>
 
     <!-- Left section (Sidebar) -->
     <left>
-        <VBox fx:id="sidebarContainer" prefWidth="200.0" spacing="10.0" stylesheets="@eventmanager.css">
+        <VBox fx:id="sidebarContainer" prefWidth="262.0" spacing="10.0">
             <!-- Title or Header if needed -->
-            <HBox alignment="CENTER">
-                <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="2.0" prefHeight="29.0" prefWidth="209.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Event Manager">
-                    <font>
-                        <Font size="16.0" />
-                    </font></Label>
+            <HBox alignment="CENTER" prefHeight="29.0" prefWidth="280.0">
+                <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="2.0" prefHeight="30.0" prefWidth="209.0" styleClass="header" text="EVENT MANAGER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+                </Label>
                 <VBox.margin>
                     <Insets bottom="10.0" top="10.0" />
                 </VBox.margin>
             </HBox>
 
             <!-- Sidebar Buttons -->
-            <VBox alignment="CENTER" spacing="30.0" styleClass="sidebarbuttons" stylesheets="@eventmanager.css">
+            <VBox alignment="CENTER" prefHeight="384.0" prefWidth="200.0" spacing="30.0" styleClass="sidebar-buttons">
                 <Button fx:id="fxNewEvent" onAction="#onNewEvent" prefHeight="40.0" prefWidth="170.0" text="New Event">
                     <font>
                         <Font size="14.0" />
@@ -53,18 +60,18 @@
                         <Font size="14.0" />
                     </font>
                 </Button>
-                <Button fx:id="fxChangeStatus" onAction="#onChangeStatus" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent;" text="Change Status">
+                <Button fx:id="fxChangeStatus" onAction="#onChangeStatus" prefHeight="40.0" prefWidth="170.0" text="Change Status">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Button>
-            <padding>
-               <Insets top="10.0" />
-            </padding>
+                <padding>
+                    <Insets top="10.0" />
+                </padding>
             </VBox>
-         <BorderPane.margin>
-            <Insets bottom="20.0" top="10.0" />
-         </BorderPane.margin>
+            <BorderPane.margin>
+                <Insets bottom="20.0" top="10.0" />
+            </BorderPane.margin>
         </VBox>
     </left>
 
@@ -73,21 +80,24 @@
         <VBox spacing="10" style="-fx-padding: 10;">
 
             <!-- Sort and Search Bar -->
-            <HBox alignment="TOP_RIGHT" spacing="10">
+            <HBox alignment="TOP_RIGHT" prefHeight="30.0" spacing="10">
 
-                <ComboBox fx:id="sortComboBox" promptText="Sort by Title">
+                <ComboBox fx:id="sortComboBox" prefHeight="30.0" promptText="Sort by Title">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Title A–Z" />
                             <String fx:value="Title Z–A" />
                         </FXCollections>
                     </items>
-               <HBox.margin>
-                  <Insets right="30.0" />
-               </HBox.margin>
+                    <HBox.margin>
+                        <Insets right="30.0" />
+                    </HBox.margin>
                 </ComboBox>
 
-                <TextField fx:id="searchField" prefHeight="27.0" prefWidth="260.0" promptText="Search by title" />
+                <TextField fx:id="searchField" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="260.0" promptText="Search by title" />
+            <VBox.margin>
+               <Insets bottom="37.0" top="10.0" />
+            </VBox.margin>
             </HBox>
 
             <!-- TableView -->
@@ -106,19 +116,19 @@
                         </cellValueFactory>
                     </TableColumn>
 
-                    <TableColumn fx:id="dateColumn" prefWidth="105.0" text="Date">
+                    <TableColumn fx:id="dateColumn" prefWidth="134.0" text="Date">
                         <cellValueFactory>
                             <PropertyValueFactory property="date" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <TableColumn fx:id="groupColumn" prefWidth="111.0" text="Group">
+                    <TableColumn fx:id="groupColumn" prefWidth="106.0" text="Group">
                         <cellValueFactory>
                             <PropertyValueFactory property="group" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <TableColumn fx:id="statusColumn" prefWidth="68.0" text="Status">
+                    <TableColumn fx:id="statusColumn" prefWidth="97.0" text="Status">
                         <cellValueFactory>
                             <PropertyValueFactory property="status" />
                         </cellValueFactory>

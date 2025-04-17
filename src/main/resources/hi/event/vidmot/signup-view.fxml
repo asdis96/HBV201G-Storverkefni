@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- signup-view.fxml -->
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.SignUpController">
+<BorderPane prefHeight="421.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hi.event.vidmot.SignUpController">
     <center>
-        <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="544.0" prefWidth="509.0" spacing="15.0">
-            <Text text="Sign Up" textAlignment="CENTER" wrappingWidth="505.8623046875">
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="397.0" prefWidth="262.0" spacing="15.0">
+         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="250.0" text="Sign Up" textAlignment="CENTER">
             <font>
-               <Font size="18.0" />
-            </font></Text>
+               <Font name="System Bold" size="18.0" />
+            </font>
+         </Label>
 
             <!-- Name Field -->
-            <TextField fx:id="nameField" prefHeight="50.0" prefWidth="250" promptText="Full Name">
+            <TextField fx:id="nameField" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="250" promptText="Full Name">
             <VBox.margin>
                <Insets top="10.0" />
             </VBox.margin></TextField>
 
             <!-- Email Field -->
-            <TextField fx:id="emailField" prefHeight="50.0" prefWidth="250" promptText="Email" />
+            <TextField fx:id="emailField" maxWidth="-Infinity" prefHeight="50.0" prefWidth="250" promptText="Email" />
 
             <!-- Username Field -->
-            <TextField fx:id="usernameField" prefHeight="50.0" prefWidth="250.0" promptText="Username" />
+            <TextField fx:id="usernameField" maxWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" promptText="Username" />
 
             <!-- Password Field -->
-            <PasswordField fx:id="passwordField" prefHeight="50.0" prefWidth="250" promptText="Password" />
-         <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
+            <PasswordField fx:id="passwordField" maxWidth="-Infinity" prefHeight="50.0" prefWidth="250" promptText="Password" />
+         <HBox alignment="BOTTOM_CENTER" prefHeight="69.0" prefWidth="500.0">
             <children>
 
                   <!-- Sign Up Button -->
-                  <Button fx:id="signUpButton" onAction="#onSignUpButtonClicked" prefWidth="250" text="Sign Up">
+                  <Button fx:id="signUpButton" onAction="#onSignUpButtonClicked" prefHeight="39.0" prefWidth="250" text="Sign Up">
                   <font>
                      <Font size="14.0" />
                   </font>
                </Button>
             </children>
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin>
          </HBox>
         </VBox>
     </center>

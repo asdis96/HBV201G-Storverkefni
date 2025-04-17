@@ -2,8 +2,11 @@ package hi.event.vidmot;
 
 import hi.event.vinnsla.User;
 import hi.event.vinnsla.UserStorage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -17,16 +20,14 @@ import javafx.stage.Stage;
  *****************************************************************************/
 
 public class SignUpController {
-
+    @FXML
+    private Button signUpButton;
     @FXML
     private TextField nameField;
-
     @FXML
     private TextField emailField;
-
     @FXML
     private TextField usernameField;
-
     @FXML
     private PasswordField passwordField;
 
@@ -52,7 +53,18 @@ public class SignUpController {
         showAlert("Sign Up successful! You can now log in.");
 
         closeWindow();
+
+        // Apply theme for the SignUp window after it's shown
+        Platform.runLater(() -> {
+            Stage stage = (Stage) signUpButton.getScene().getWindow(); // The stage where the scene is added
+            Scene scene = stage.getScene();
+            if (scene != null) {
+                String currentTheme = EventManagerApplication.getTheme();
+                scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
+            }
+        });
     }
+
 
     /**
      * Displays an informational alert with the given message.
