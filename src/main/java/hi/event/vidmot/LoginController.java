@@ -14,7 +14,19 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  :  This controller handles the login functionality for the Event Manager application.
+ *  It manages user input for logging in, displays the corresponding logo based on the
+ *  selected theme, and provides a way to navigate to the signup screen if the user
+ *   doesn't have an account. Additionally, it handles error messages in case of invalid
+ *  login attempts. Upon a successful login, the user is redirected to the Event Manager
+ *  interface, and the login window is closed.
+ *
+ *
+ *****************************************************************************/
 public class LoginController {
     @FXML
     public ImageView logoImage;
@@ -36,10 +48,19 @@ public class LoginController {
      */
     private EventManagerApplication application;
 
+    /**
+     * Sets the reference to the application instance.
+     *
+     * @param application the EventManagerApplication instance that will be used for scene switching.
+     */
     public void setApplication(EventManagerApplication application) {
         this.application = application;
     }
-
+    /**
+     * Changes the logo depending on the selected theme (light or dark).
+     *
+     * @param themePath the path to the theme's CSS file, which determines whether it's dark or light theme.
+     */
     public void applyTheme(String themePath) {
         String logoPath = themePath.contains("dark")
                 ? "/hi/event/vidmot/media/dark-logo.jpg"
@@ -49,6 +70,11 @@ public class LoginController {
         logoImage.setImage(new Image(getClass().getResource(logoPath).toExternalForm()));
     }
 
+    /**
+     * Handles the login button click event. Validates the user's credentials and
+     * switches to the Event Manager scene if successful. If the login is unsuccessful,
+     * an error alert is displayed.
+     */
     @FXML
     private void onLoginButtonClicked() {
         String username = usernameField.getText();
@@ -75,7 +101,9 @@ public class LoginController {
         }
     }
 
-
+    /**
+     * Opens the SignUp screen in a new window when the user clicks the sign-up link.
+     */
     @FXML
     private void onSignUpLinkClicked() {
         try {
@@ -95,6 +123,11 @@ public class LoginController {
 
     }
 
+    /**
+     * Displays an error alert with the specified message.
+     *
+     * @param message the message to be displayed in the alert
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Login Failed");

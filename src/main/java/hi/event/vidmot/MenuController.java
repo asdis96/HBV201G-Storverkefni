@@ -17,7 +17,10 @@ import java.io.IOException;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  :
+ *  Description  : This class is the controller for the Menu in the Event Manager application.
+ *   It handles various user interactions in the menu, such as switching themes,
+ *  logging out, opening the account settings window, and displaying information
+ *   about the program.
  *
  *
  *****************************************************************************/
@@ -75,15 +78,13 @@ public class MenuController {
             themePath = "/hi/event/vidmot/css/light-mode.css";
         }
 
-        // Set the theme globally
         EventManagerApplication.setTheme(themePath);
 
-        // Apply it to the current scene
         Scene scene = selected.getParentPopup().getOwnerWindow().getScene();
         scene.getStylesheets().clear();
         scene.getStylesheets().add(getClass().getResource(themePath).toExternalForm());
 
-        // 🆕 Apply theme-specific logo in LoginController
+
         Stage stage = (Stage) scene.getWindow();
         if (stage.getScene().getRoot().getUserData() instanceof LoginController loginController) {
             loginController.applyTheme(themePath);
@@ -98,42 +99,44 @@ public class MenuController {
      */
     @FXML
     void onAccount(ActionEvent event) {
-        // Get the logged-in user from the session
         User loggedInUser = UserSession.getLoggedInUser();
+        Alert alert;
 
         if (loggedInUser != null) {
-            // Fetch values from the JavaFX properties
-            String username = loggedInUser.usernameProperty().get();
-            String email = loggedInUser.emailProperty().get();
-            String name = loggedInUser.nameProperty().get();
+            String userInfo = "Username: " + loggedInUser.usernameProperty().get() + "\n" +
+                    "Email: " + loggedInUser.emailProperty().get() + "\n" +
+                    "Name: " + loggedInUser.nameProperty().get();
 
-            // Create a message with the user's information
-            String userInfo = "Username: " + username + "\n" +
-                    "Email: " + email + "\n" +
-                    "Name: " + name;
-
-            // Show user info in an alert
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Account Information");
             alert.setHeaderText("Logged-In User Information");
-            alert.setContentText(userInfo);
 
-            // Apply the current theme to the alert
-            EventManagerApplication.applyStylesheetToAlert(alert);
+            TextArea textArea = new TextArea(userInfo);
+            textArea.setWrapText(true);
+            textArea.setEditable(false);
+            textArea.setMaxWidth(Double.MAX_VALUE);
+            textArea.setMaxHeight(Double.MAX_VALUE);
 
-            alert.showAndWait();
+            textArea.setPrefWidth(350);
+            textArea.setPrefHeight(120);
+
+            textArea.setStyle("-fx-control-inner-background: #252427; -fx-text-fill: #ffffff;");
+
+            alert.getDialogPane().setContent(textArea);
         } else {
-            // If no user is logged in
-            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Account Settings");
             alert.setHeaderText("Error");
             alert.setContentText("No user is currently logged in.");
-
-            // Apply the current theme to the alert
-            EventManagerApplication.applyStylesheetToAlert(alert);
-
-            alert.showAndWait();
         }
+
+        EventManagerApplication.applyStylesheetToAlert(alert);
+
+        DialogPane pane = alert.getDialogPane();
+        pane.setMinHeight(Region.USE_PREF_SIZE);
+        pane.setMinWidth(Region.USE_PREF_SIZE);
+
+        alert.showAndWait();
     }
 
 
