@@ -128,7 +128,7 @@
 }
 
 .context-menu {
-    -fx-background-color: #252427; /
+    -fx-background-color: #252427;
     -fx-border-color: #CBCBCB;
 }
 
@@ -140,8 +140,8 @@
 }
 
 .context-menu .menu-item:hover {
-    -fx-background-color: #4a4a4a;  /* Hover effect */
-    -fx-text-fill: #ffffff;         /* Text on hover */
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: #ffffff;
 }
 
 
@@ -280,11 +280,6 @@
 }
 
 .dialog{
-    -fx-background-color: #252427;
-
-}
-
-.new-event-main {
     -fx-background-color: #252427;
 
 }

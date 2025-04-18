@@ -84,7 +84,7 @@
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin></Label>
-                <ComboBox fx:id="fxStatus" prefWidth="130.0" promptText="Select status" />
+                <ComboBox fx:id="fxStatus" prefWidth="185.5" promptText="Select status" />
             </children>
         </HBox>
         <HBox prefHeight="65.0" prefWidth="390.0" spacing="20.0">
@@ -95,15 +95,15 @@
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin></Label>
-                <ComboBox fx:id="fxGroup" prefWidth="130.0" promptText="Select group" />
+                <ComboBox fx:id="fxGroup" prefWidth="185.5" promptText="Select group" />
             </children>
         </HBox>
         <HBox alignment="BOTTOM_CENTER" prefHeight="77.0" prefWidth="390.0" spacing="40.0">
             <children>
 
                 <!-- Save Button -->
-                <Button fx:id="fxSaveButton" onAction="#saveEvent" text="Save Event" />
-                <Button fx:id="fxCancelButton" onAction="#handleCancel" text="Cancel" />
+                <Button fx:id="fxSaveButton" onAction="#saveEvent" prefHeight="30.0" prefWidth="100.0" text="Save Event" />
+                <Button fx:id="fxCancelButton" onAction="#handleCancel" prefHeight="30.0" prefWidth="100.0" text="Cancel" />
             </children>
          <VBox.margin>
             <Insets bottom="5.0" />
@@ -124,7 +124,7 @@
             <children>
                 <!-- Image Selection -->
                 <Label text="Select Image" />
-                <Button onAction="#openImage" text="Choose Image" />
+                <Button onAction="#openImage" prefHeight="30.0" prefWidth="120.0" text="Choose Image" />
             </children>
         </HBox>
         <ImageView fx:id="fxImage" fitHeight="170.0" fitWidth="250.0">
@@ -136,7 +136,7 @@
 
                 <!-- Media Selection -->
                 <Label text="Select Media" />
-                <Button onAction="#openMedia" text="Choose Media" />
+                <Button onAction="#openMedia" prefHeight="30.0" prefWidth="120.0" text="Choose Media" />
             </children>
             <VBox.margin>
                 <Insets />

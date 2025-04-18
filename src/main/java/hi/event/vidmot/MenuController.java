@@ -79,12 +79,9 @@ public class MenuController {
         }
 
         EventManagerApplication.setTheme(themePath);
-
         Scene scene = selected.getParentPopup().getOwnerWindow().getScene();
         scene.getStylesheets().clear();
         scene.getStylesheets().add(getClass().getResource(themePath).toExternalForm());
-
-
         Stage stage = (Stage) scene.getWindow();
         if (stage.getScene().getRoot().getUserData() instanceof LoginController loginController) {
             loginController.applyTheme(themePath);
@@ -116,7 +113,6 @@ public class MenuController {
             textArea.setEditable(false);
             textArea.setMaxWidth(Double.MAX_VALUE);
             textArea.setMaxHeight(Double.MAX_VALUE);
-
             textArea.setPrefWidth(350);
             textArea.setPrefHeight(120);
 
@@ -153,32 +149,30 @@ public class MenuController {
         }
     }
 
+    /**
+     * Switches the application to the login screen after logging out the current user.
+     * <p>
+     * This method loads the login FXML view, applies the current theme to the new scene,
+     * and opens a new stage with the login UI. It also transfers the application instance
+     * to the new `LoginController`.
+     * </p>
+     *
+     * @throws IOException if the login FXML file cannot be loaded.
+     */
     private void switchToLoginScreen() throws IOException {
-        // Load the login screen FXML
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
-
-        // Get the current theme path (light or dark mode)
-        String currentTheme = EventManagerApplication.getTheme(); // Get the theme set in the app
-
-        // Apply the current theme to the login scene
-        scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm()); // Apply the theme
-
-        // Set the application reference in the controller
+        String currentTheme = EventManagerApplication.getTheme();
+        scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
         LoginController loginController = fxmlLoader.getController();
-        loginController.setApplication(EventManagerApplication.getApplicationInstance()); // Ensure correct app reference
-
-        // Apply the correct logo based on the theme
-        loginController.applyTheme(currentTheme); // Update logo as per theme (light/dark)
-
-        // Show the login screen
+        loginController.setApplication(EventManagerApplication.getApplicationInstance());
+        loginController.applyTheme(currentTheme);
         Stage stage = new Stage();
         stage.setTitle("Login");
         stage.setScene(scene);
         stage.show();
     }
 
-    // Private methods
 
     /**
      * Returns the EventManagerController

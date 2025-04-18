@@ -31,8 +31,14 @@ import java.util.List;
 /******************************************************************************
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
- *
- *  Description  :
+ * <p>
+ *  Description  : Controller for the New Event view in the Event Manager application.
+ *  This controller manages the user interface for creating or editing an event,
+ *  handling input fields for event details, image/media file uploads, and saving the event.
+ * <p>
+ *  It supports both creating new events and editing existing ones. This controller
+ *  interacts with the `EventManagerController` and `EventStorage` classes to
+ *  save the event data and manage the event lifecycle.
  *
  *
  *****************************************************************************/
@@ -86,6 +92,12 @@ public class NewEventController extends VBox {
     private EventValidator validator = new EventValidator();
     private boolean isNewEvent = true;
 
+    /**
+     * Sets the controller to edit an existing event.
+     *
+     * @param controller The event manager controller to interact with.
+     * @param event The event to be edited.
+     */
     public void setEditMode(EventManagerController controller, Event event) {
         this.controller = controller;
         this.event = event;
@@ -94,12 +106,20 @@ public class NewEventController extends VBox {
         populateFormWithEventDetails();
     }
 
+    /**
+     * Sets the controller to create a new event.
+     *
+     * @param controller The event manager controller to interact with.
+     */
     public void setController(EventManagerController controller) {
         this.controller = controller;
         this.isNewEvent = true;
         initialize();
     }
 
+    /**
+     * Initializes the form with default values and bindings for new event creation.
+     */
     public void initialize() {
         fxGroup.setItems(FXCollections.observableArrayList(Group.values()));
         fxStatus.setItems(FXCollections.observableArrayList(EventStatus.values()));
@@ -108,9 +128,7 @@ public class NewEventController extends VBox {
         fxGroup.valueProperty().bindBidirectional(event.groupProperty());
         fxDate.valueProperty().bindBidirectional(event.dateProperty());
         formatDatePicker(fxDate);
-
         fxDescription.textProperty().bindBidirectional(event.descriptionProperty());
-
         setUpTimeSpinner();
         initializeFileChoosers();
 
@@ -127,6 +145,9 @@ public class NewEventController extends VBox {
         });
     }
 
+    /**
+     * Sets up the time spinner for selecting the event time.
+     */
     private void setUpTimeSpinner() {
         fxHoursSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, LocalTime.now().getHour()));
         fxMinutesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, LocalTime.now().getMinute()));
@@ -136,24 +157,36 @@ public class NewEventController extends VBox {
         updateSpinners(LocalTime.now());
     }
 
+    /**
+     * Updates the event time based on the selected hour and minute.
+     */
     private void updateEventTime() {
-        // Update the event's time based on the selected hour and minute
         LocalTime selectedTime = LocalTime.of(fxHoursSpinner.getValue(), fxMinutesSpinner.getValue());
         event.timeProperty().set(selectedTime);
     }
 
+    /**
+     * Updates the time spinners based on the current event time.
+     *
+     * @param time The current event time.
+     */
     private void updateSpinners(LocalTime time) {
-        // Set the spinner values based on the event's time
         fxHoursSpinner.getValueFactory().setValue(time.getHour());
         fxMinutesSpinner.getValueFactory().setValue(time.getMinute());
     }
 
-
-
+    /**
+     * Initializes the file chooser for selecting image and media files.
+     */
     private void initializeFileChoosers() {
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif", "*.bmp"));
     }
 
+    /**
+     * Formats the DatePicker control to display the date in the format dd/MM/yyyy.
+     *
+     * @param datePicker The DatePicker to format.
+     */
     private void formatDatePicker(DatePicker datePicker) {
         datePicker.setConverter(new StringConverter<LocalDate>() {
             private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -170,6 +203,9 @@ public class NewEventController extends VBox {
         });
     }
 
+    /**
+     * Populates the form with the details of an existing event.
+     */
     private void populateFormWithEventDetails() {
         fxTitle.textProperty().bindBidirectional(event.titleProperty());
         fxGroup.valueProperty().bindBidirectional(event.groupProperty());
@@ -216,6 +252,11 @@ public class NewEventController extends VBox {
     }
 
 
+    /**
+     * Opens the file chooser to select an image and updates the event with the selected image.
+     *
+     * @param actionEvent The action event triggered when the image button is clicked.
+     */
     @FXML
     void openImage(ActionEvent actionEvent) {
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif", "*.bmp"));
@@ -237,6 +278,11 @@ public class NewEventController extends VBox {
         }
     }
 
+    /**
+     * Opens the file chooser to select a video or audio file and updates the event with the selected media.
+     *
+     * @param actionEvent The action event triggered when the media button is clicked.
+     */
     @FXML
     void openMedia(ActionEvent actionEvent) {
         FileChooser fxFileChooser = new FileChooser();
@@ -262,7 +308,11 @@ public class NewEventController extends VBox {
         }
     }
 
-
+    /**
+     * Loads the media into the media view controller for playback.
+     *
+     * @param media The media to load into the view.
+     */
     private void loadMediaViewController(Media media) {
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));
         mediaLoader.setControllerFactory(param -> {
@@ -280,6 +330,11 @@ public class NewEventController extends VBox {
     }
 
 
+    /**
+     * Saves the event to storage and updates the event manager with the new or edited event.
+     *
+     * @param actionEvent The action event triggered when the save button is clicked.
+     */
     @FXML
     void saveEvent(ActionEvent actionEvent) {
         if (this.event != null) {
@@ -320,6 +375,11 @@ public class NewEventController extends VBox {
         }
     }
 
+    /**
+     * Shows an error alert with the provided message.
+     *
+     * @param message The error message to display.
+     */
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -329,11 +389,19 @@ public class NewEventController extends VBox {
         alert.showAndWait();
     }
 
+    /**
+     * Closes the current window after saving.
+     */
     private void closeWindowOnSave() {
         Stage stage = (Stage) fxSaveButton.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Handles the cancel button click. Shows confirmation before closing without saving.
+     *
+     * @param actionEvent The action event triggered when cancel is clicked.
+     */
     @FXML
     void handleCancel(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -353,11 +421,20 @@ public class NewEventController extends VBox {
         });
     }
 
+    /**
+     * Closes the current window.
+     */
     private void closeWindow() {
         Stage stage = (Stage) fxCancelButton.getScene().getWindow();
         stage.close();
     }
 
+
+    /**
+     * Returns a string representation of the controller, useful for debugging.
+     *
+     * @return A string representing the controller and title.
+     */
     @Override
     public String toString() {
         return "NewEventController{" +
@@ -365,7 +442,11 @@ public class NewEventController extends VBox {
                 "} " + super.toString();
     }
 
-
+    /**
+     * Returns the current event instance managed by the controller.
+     *
+     * @return The current event.
+     */
     public Event getEvent() {
         return event;
     }

@@ -1,24 +1,24 @@
 .root {
-    -fx-background-color: #fdfdfd; /* white color */
-    -fx-text-fill: #212121; /* Dark grey for text */
+    -fx-background-color: #fdfdfd;
+    -fx-text-fill: #212121;
     -fx-font-family: "PT Serif", "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
 /*     General      */
 .label, .text-field, .text-area, .combo-box, .table-view, .menu-bar, .button, .date-picker, .spinner {
     -fx-font-size: 14px;
-    -fx-text-fill: #212121; /* Dark grey for text */
+    -fx-text-fill: #212121;
 }
 
 .text-field, .text-area, .combo-box, .date-picker {
-    -fx-background-color: #fdfdfd; /* white color */
-    -fx-border-color: #dcdcdc; /*light gray*/
+    -fx-background-color: #fdfdfd;
+    -fx-border-color: #dcdcdc;
     -fx-background-radius: 4;
     -fx-border-radius: 4;
 }
 
 .header {
-    -fx-text-fill: #4A3931; /* Dark brown for header text */
+    -fx-text-fill: #4A3931;
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-font-family: "PT Serif";
@@ -26,7 +26,7 @@
 
 /* General Buttons */
 .button {
-    -fx-background-color: #EBDED4; /* white */
+    -fx-background-color: #EBDED4;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
     -fx-padding: 8 16;
@@ -38,14 +38,14 @@
 
 /*       Login  and Sign up styling       */
 .login-root {
-    -fx-background-color: #fdfdfd; /* white color */
+    -fx-background-color: #fdfdfd;
 }
 .login-main {
     -fx-background-color: #fdfdfd;
 }
 
 .login-button {
-    -fx-background-color: #EBDED4; /* light -sand brown  */
+    -fx-background-color: #EBDED4;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
 }
@@ -54,20 +54,20 @@
     -fx-background-color: #f3ebe5;
 }
 .hyperlink {
-    -fx-text-fill: #a66a6a; /* A deep rosybrown  */
+    -fx-text-fill: #a66a6a;
     -fx-underline: true;
     -fx-font-size: 14px;
     -fx-font-weight: normal;
 }
 
 .hyperlink:hover {
-    -fx-text-fill: #301c1c; /* deeepp rosybrown */
+    -fx-text-fill: #301c1c;
     -fx-cursor: hand;
 }
 
 .text-field:focused,
 .password-field:focused {
-    -fx-border-color: #EBDED4; /* light brown outline on focus */
+    -fx-border-color: #EBDED4;
     -fx-border-width: 2px;
     -fx-background-color: white;
     -fx-background-insets: 0;
@@ -103,8 +103,27 @@
 /*      menubar      */
 .menu-bar {
     -fx-background-color: #fdfdfd;
-    -fx-border-color: #4A3931;
+    -fx-border-color: #9A7B6C;
     -fx-border-width: 0 0 1 0;
+}
+.menu-bar .menu:hover {
+    -fx-background-color: #EBDED4;
+}
+.context-menu {
+    -fx-background-color: #fdfdfd;
+    -fx-border-color: #9A7B6C;
+}
+
+.context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #212121;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #EBDED4;
+    -fx-text-fill: #212121;
 }
 
 
@@ -115,11 +134,11 @@
 }
 
 .table-row-cell:odd {
-    -fx-background-color: #ffffff; /* White */
+    -fx-background-color: #ffffff;
 }
 
 .table-row-cell:even {
-    -fx-background-color: #faf8f6; /* Light beige, adjust as you like */
+    -fx-background-color: #faf8f6;
 }
 
 .table-row-cell:filled:selected {
@@ -139,9 +158,6 @@
     -fx-background-color: #4A3931;
 }
 
-.table-view .check-box:selected .mark {
-    -fx-background-color: white;
-}
 
 
 .scroll-pane {
