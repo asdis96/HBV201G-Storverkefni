@@ -17,7 +17,10 @@ import java.time.format.DateTimeFormatter;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  :
+ *  Description  :Represents an event with properties like title, date, time, description,
+ *  media files (video and image), and event status. This class is compatible
+ *  with JavaFX properties for use in FXML-based UI applications, and Jackson
+ *  for JSON serialization and deserialization.
  *
  *
  *****************************************************************************/
@@ -29,18 +32,16 @@ public class Event {
     private SimpleObjectProperty<LocalDate> date;
     private SimpleObjectProperty<Group> group;
     private SimpleObjectProperty<EventStatus> status;
-    // Jackson will not serialize these properties
     @JsonIgnore
     private SimpleObjectProperty<Media> videoMedia;
     @JsonIgnore
     private SimpleObjectProperty<Image> imageMedia;
     private SimpleObjectProperty<LocalTime> time;
     private SimpleStringProperty description;
-
     private SimpleStringProperty videoMediaPath;
     private SimpleStringProperty imageMediaPath;
 
-    // Jackson-compatible fields (plain types for serialization/deserialization)
+
     private Boolean selectedValue;
     private String titleValue;
     private LocalDate dateValue;
@@ -62,7 +63,7 @@ public class Event {
                  @JsonProperty("timeValue") LocalTime time,
                  @JsonProperty("descriptionValue") String description) {
 
-        // Handle nulls and default values here
+
         this.selectedValue = (selected != null) ? selected : false;
         this.titleValue = title != null ? title : "";
         this.dateValue = date != null ? date : LocalDate.now();
@@ -205,7 +206,6 @@ public class Event {
     }
 
     @JsonIgnore
-    // FXML formatting: Format LocalDate as "DD MMMM YYYY" (e.g., "15 April 2025")
     public String getFormattedDateForFXML() {
         if (dateValue != null) {
             return dateValue.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")); // Custom format for FXML
@@ -213,6 +213,11 @@ public class Event {
         return null;
     }
 
+    /**
+     * Loads the image media from the provided image media path and sets it into the image media property.
+     *
+     * @throws NullPointerException if the image cannot be found at the provided path
+     */
     public void loadImageMedia() {
         String imagePath = imageMediaPathValue;  // This should be something like "hi/event/vidmot/media/monk.JPG"
         URL imageUrl = getClass().getClassLoader().getResource(imagePath);
@@ -226,6 +231,11 @@ public class Event {
         }
     }
 
+    /**
+     * Loads the video media from the provided video media path and sets it into the video media property.
+     *
+     * @throws NullPointerException if the video cannot be found at the provided path
+     */
     public void loadVideoMedia() {
         String videoPath = videoMediaPathValue;  // This should be something like "hi/event/vidmot/media/world_fixed.mp4"
         URL videoUrl = getClass().getClassLoader().getResource(videoPath);
@@ -265,7 +275,10 @@ public class Event {
         this.descriptionValue = descriptionValue;
     }
 
-    // Method to populate JavaFX properties from plain values
+    /**
+     * Populates JavaFX properties from the plain values of the event.
+     * Useful when updating the UI with new values.
+     */
     public void populateFromPlainValues() {
         this.selected.set(this.selectedValue);
         this.title.set(this.titleValue);
@@ -278,7 +291,9 @@ public class Event {
         this.imageMediaPath.set(this.imageMediaPathValue);
     }
 
-    // Method to extract plain values from JavaFX properties
+    /**
+     * Extracts plain values from JavaFX properties to be used for serialization or data transfer.
+     */
     public void extractToPlainValues() {
         this.selectedValue = this.selected.get();
         this.titleValue = this.title.get();

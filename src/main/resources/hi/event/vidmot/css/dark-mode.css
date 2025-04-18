@@ -1,24 +1,24 @@
 .root {
-    -fx-background-color: #252427; /* Dark gray */
-    -fx-text-fill: #CBCBCB; /* Light grey text */
+    -fx-background-color: #252427;
+    -fx-text-fill: #CBCBCB;
     -fx-font-family: "PT Serif","Segoe UI", "Helvetica Neue", sans-serif;
 }
 /*     General      */
 .label, .text-field, .text-area, .combo-box, .table-view, .menu-bar, .button, .date-picker, .spinner {
     -fx-font-size: 14px;
-    -fx-text-fill: #CBCBCB; /* Light grey text */
+    -fx-text-fill: #CBCBCB;
 }
 
 .text-field, .text-area, .combo-box, .date-picker {
-    -fx-background-color: #252427;/*dark grey*/
-    -fx-border-color: #373539; /*medium grey*/
+    -fx-background-color: #252427;
+    -fx-border-color: #373539;
     -fx-background-radius: 4;
     -fx-border-radius: 4;
 }
 
 /* Header */
 .header {
-    -fx-text-fill: #9A7B6C; /* Medium brown for header text */
+    -fx-text-fill: #9A7B6C;
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-font-family: "PT Serif";
@@ -26,8 +26,8 @@
 
 /* General Buttons */
 .button {
-    -fx-background-color: #373539; /* medium grey button background */
-    -fx-border-color: #CBCBCB; /* Slightly lighter grey for borders */
+    -fx-background-color: #373539;
+    -fx-border-color: #CBCBCB;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
     -fx-border-width: 0.5;
@@ -74,12 +74,12 @@
 }
 
 .hyperlink:hover {
-    -fx-text-fill: #e8d9d9; /* liiiiight rosybrown */
+    -fx-text-fill: #e8d9d9;
     -fx-cursor: hand;
 }
 .text-field:focused,
 .password-field:focused {
-    -fx-border-color: #9A7B6C; /* light brown outline on focus */
+    -fx-border-color: #9A7B6C;
     -fx-border-width: 2px;
     -fx-background-color: #252427;
     -fx-text-fill: #CBCBCB;
@@ -101,7 +101,7 @@
 }
 
 .sidebar-buttons Button:hover {
-    -fx-text-fill: #EBDED4; /* sand text on hover */
+    -fx-text-fill: #EBDED4;
     -fx-cursor: hand;
 }
 
@@ -110,7 +110,7 @@
 }
 
 .sidebar-buttons Button:focused {
-    -fx-text-fill: #373539; /* Medium grey for focused state */
+    -fx-text-fill: #373539;
 }
 
 /*      Menu Bar    */
@@ -124,7 +124,7 @@
 }
 
 .menu-bar .menu:hover .label {
-    -fx-text-fill: #ffffff; /* Hover text color */
+    -fx-text-fill: #ffffff;
 }
 
 .context-menu {
@@ -173,8 +173,8 @@
 }
 
 .table-view .table-row-cell:filled:selected {
-    -fx-background-color: #CBCBCB;  /* light gray */
-    -fx-text-fill: #252427; /* dark gray */
+    -fx-background-color: #CBCBCB;
+    -fx-text-fill: #252427;
     -fx-table-cell-border-color: #373539;
 }
 /* Base checkbox box styling */
@@ -212,7 +212,7 @@
 
 .table-view .column-header-background {
     -fx-border-color: #444444;
-    -fx-border-width: 0 0 1 0; /* bottom border only */
+    -fx-border-width: 0 0 1 0;
 }
 
 .table-view .table-row-cell:filled:selected .table-cell {

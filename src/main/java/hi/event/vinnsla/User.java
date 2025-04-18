@@ -4,7 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.beans.property.SimpleStringProperty;
-
+/******************************************************************************
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  : Represents a user with JavaFX properties for FXML bindings and plain fields for JSON serialization.
+ *  This class provides methods for serialization, deserialization, and JavaFX property management.
+ *
+ *
+ *****************************************************************************/
 public class User {
 
     // JavaFX properties (for FXML bindings)
@@ -24,13 +32,13 @@ public class User {
                 @JsonProperty("passwordValue") String password,
                 @JsonProperty("emailValue") String email,
                 @JsonProperty("nameValue") String name) {
-        // Initialize plain fields
+
         this.usernameValue = username != null ? username : "";
         this.passwordValue = password != null ? password : "";
         this.emailValue = email != null ? email : "";
         this.nameValue = name != null ? name : "";
 
-        // Initialize JavaFX properties
+
         this.username = new SimpleStringProperty(usernameValue);
         this.password = new SimpleStringProperty(passwordValue);
         this.email = new SimpleStringProperty(emailValue);
@@ -54,14 +62,14 @@ public class User {
         return name;
     }
 
-    // Jackson-compatible getters and setters for plain fields
+
     public String getUsernameValue() {
         return usernameValue;
     }
 
     public void setUsernameValue(String usernameValue) {
         this.usernameValue = usernameValue;
-        this.username.set(usernameValue);  // Update the JavaFX property
+        this.username.set(usernameValue);
     }
 
     public String getPasswordValue() {
@@ -70,7 +78,7 @@ public class User {
 
     public void setPasswordValue(String passwordValue) {
         this.passwordValue = passwordValue;
-        this.password.set(passwordValue);  // Update the JavaFX property
+        this.password.set(passwordValue);
     }
 
     public String getEmailValue() {
@@ -79,7 +87,7 @@ public class User {
 
     public void setEmailValue(String emailValue) {
         this.emailValue = emailValue;
-        this.email.set(emailValue);  // Update the JavaFX property
+        this.email.set(emailValue);
     }
 
     public String getNameValue() {
@@ -88,10 +96,10 @@ public class User {
 
     public void setNameValue(String nameValue) {
         this.nameValue = nameValue;
-        this.name.set(nameValue);  // Update the JavaFX property
+        this.name.set(nameValue);
     }
 
-    // Jackson Ignore for properties that are not part of the serialization
+
     @JsonIgnore
     public String getFormattedUsernameForFXML() {
         return username.get();
@@ -112,7 +120,11 @@ public class User {
         return password.get();
     }
 
-    // Convert the User object to a JSON string
+    /**
+     * Converts this {@link User} object to a JSON string.
+     *
+     * @return the JSON string representation of the user
+     */
     public String toJSON() {
         return "{"
                 + "\"username\":\"" + usernameValue + "\","
@@ -122,7 +134,12 @@ public class User {
                 + "}";
     }
 
-    // Static method to create a User object from a JSON string
+    /**
+     * Creates a new {@link User} object from a JSON string.
+     *
+     * @param json the JSON string to parse
+     * @return a new {@link User} object
+     */
     public static User fromJSON(String json) {
         String[] parts = json.replace("{", "").replace("}", "").split(",");
         String username = parts[0].split(":")[1].replace("\"", "");
@@ -133,7 +150,9 @@ public class User {
         return new User(username, password, email, name);
     }
 
-    // Method to populate JavaFX properties from plain values
+    /**
+     * Populates the JavaFX properties from the plain field values.
+     */
     public void populateFromPlainValues() {
         this.username.set(this.usernameValue);
         this.password.set(this.passwordValue);
@@ -141,7 +160,9 @@ public class User {
         this.name.set(this.nameValue);
     }
 
-    // Method to extract plain values from JavaFX properties
+    /**
+     * Extracts the plain field values from the JavaFX properties.
+     */
     public void extractToPlainValues() {
         this.usernameValue = this.username.get();
         this.passwordValue = this.password.get();

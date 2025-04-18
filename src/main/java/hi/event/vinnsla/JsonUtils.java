@@ -14,23 +14,29 @@ import java.util.List;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  :
+ *  Description  :Utility class for handling JSON operations related to {@link Event} objects.
+ * Provides methods for reading, writing, and converting {@link Event} objects to/from JSON.
  *
  *
  *****************************************************************************/
 
 public class JsonUtils {
 
-    // Jackson ObjectMapper instance
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
-        // Enable pretty print for JSON output
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Optional: to disable timestamps
     }
 
+    /**
+     * Reads a list of {@link Event} objects from a JSON file.
+     *
+     * @param filePath the path to the JSON file
+     * @return a list of {@link Event} objects read from the file
+     * @throws IOException if an I/O error occurs or the JSON format is invalid
+     */
     public static List<Event> readEventsFromFile(String filePath) throws IOException {
         File file = new File(filePath);
 
@@ -48,20 +54,36 @@ public class JsonUtils {
     }
 
 
-    // Method to write events to a JSON file
+    /**
+     * Writes a list of {@link Event} objects to a JSON file.
+     *
+     * @param events   the list of {@link Event} objects to write to the file
+     * @param filePath the path to the JSON file
+     * @throws IOException if an I/O error occurs during writing
+     */
     public static void writeEventsToFile(List<Event> events, String filePath) throws IOException {
         File file = new File(filePath);
-
-        // Serialize the list of events to JSON and write it to the file
         objectMapper.writeValue(file, events);
     }
 
-    // Method to convert an Event object to JSON string (for debugging or logging)
+    /**
+     * Converts an {@link Event} object to a JSON string for debugging or logging purposes.
+     *
+     * @param event the {@link Event} object to convert
+     * @return the JSON string representation of the event
+     * @throws JsonProcessingException if an error occurs during conversion
+     */
     public static String eventToJsonString(Event event) throws JsonProcessingException {
         return objectMapper.writeValueAsString(event);
     }
 
-    // Method to convert a list of Event objects to JSON string (for debugging or logging)
+    /**
+     * Converts a list of {@link Event} objects to a JSON string for debugging or logging purposes.
+     *
+     * @param events the list of {@link Event} objects to convert
+     * @return the JSON string representation of the events
+     * @throws JsonProcessingException if an error occurs during conversion
+     */
     public static String eventsToJsonString(List<Event> events) throws JsonProcessingException {
         return objectMapper.writeValueAsString(events);
     }

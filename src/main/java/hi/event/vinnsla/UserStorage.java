@@ -14,7 +14,12 @@ import java.util.Scanner;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  :
+ *  Description  :   This class provides methods to manage user data, including reading, adding,
+ *  updating, and validating user login from a JSON file.
+ *  <p>
+ *  The user data is stored in a JSON file called "users.json", and operations
+ *  are performed on that file to load, save, and update user information.
+ *
  *
  *
  *****************************************************************************/
@@ -23,15 +28,18 @@ public class UserStorage {
 
     private static final File USERS_FILE = new File("users.json");
 
-    // Method to read all users from the JSON file
+    /**
+     * Loads all users from the JSON file.
+     *
+     * @return A list of User objects representing all the users in the storage.
+     */
     public static List<User> loadUsers() {
         List<User> users = new ArrayList<>();
         try {
             if (!USERS_FILE.exists()) {
-                return users;  // No users file, return empty list
+                return users;
             }
 
-            // Read the file content
             Scanner scanner = new Scanner(USERS_FILE);
             StringBuilder jsonContent = new StringBuilder();
             while (scanner.hasNext()) {
@@ -39,7 +47,6 @@ public class UserStorage {
             }
             scanner.close();
 
-            // Parse the content of the file into a JSONArray
             if (jsonContent.length() > 0) {
                 JSONArray usersArray = new JSONArray(jsonContent.toString());
                 for (int i = 0; i < usersArray.length(); i++) {
@@ -59,7 +66,11 @@ public class UserStorage {
         return users;
     }
 
-    // Method to add a new user to the JSON file
+    /**
+     * Adds a new user to the JSON file.
+     *
+     * @param user The User object to be added to the storage.
+     */
     public static void addUser(User user) {
         try {
             List<User> users = loadUsers();
@@ -84,7 +95,13 @@ public class UserStorage {
         }
     }
 
-
+    /**
+     * Validates the login credentials by checking if the username and password match any user.
+     *
+     * @param username The username to be validated.
+     * @param password The password to be validated.
+     * @return true if the credentials match a user, false otherwise.
+     */
     public static boolean validateLogin(String username, String password) {
         List<User> users = loadUsers();
         for (User user : users) {
@@ -95,7 +112,12 @@ public class UserStorage {
         return false;
     }
 
-    // Method to get a user by username
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username The username of the user to retrieve.
+     * @return The User object if found, null if not found.
+     */
     public static User getUserByUsername(String username) {
         List<User> users = loadUsers();
         for (User user : users) {
@@ -106,30 +128,34 @@ public class UserStorage {
         return null;
     }
 
-    // Method to update an existing user's information in the JSON file
+    /**
+     * Updates the information of an existing user in the JSON file.
+     *
+     * @param updatedUser The User object with the updated information.
+     */
     public static void updateUser(User updatedUser) {
         List<User> users = loadUsers();
 
         for (User user : users) {
             if (user.getUsernameValue().equals(updatedUser.getUsernameValue())) {
-                // Update the user information
                 user.setPasswordValue(updatedUser.getPasswordValue());  // Update password
                 user.setEmailValue(updatedUser.getEmailValue());        // Update email
                 user.setNameValue(updatedUser.getNameValue());          // Update name
 
-                // Save the updated users list back to the file
                 saveUsersToStorage(users);
                 return;
             }
         }
-        // If user not found, handle as needed (optional)
         System.out.println("User not found: " + updatedUser.getUsernameValue());
     }
 
-    // Method to save the updated list of users back to the JSON file
+    /**
+     * Saves the list of users to the JSON file.
+     *
+     * @param users The list of User objects to save.
+     */
     public static void saveUsersToStorage(List<User> users) {
         try {
-            // Convert the users list to a JSONArray
             JSONArray usersArray = new JSONArray();
             for (User u : users) {
                 JSONObject userJSON = new JSONObject();
@@ -141,7 +167,6 @@ public class UserStorage {
                 usersArray.put(userJSON);
             }
 
-            // Write the updated users list back to the file
             try (FileWriter writer = new FileWriter(USERS_FILE)) {
                 writer.write(usersArray.toString());
             }

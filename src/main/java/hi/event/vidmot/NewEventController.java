@@ -118,7 +118,6 @@ public class NewEventController extends VBox {
             populateFormWithEventDetails();
         }
 
-        // Delay stylesheet application until scene is available
         Platform.runLater(() -> {
             Scene scene = fxMainView.getScene();
             if (scene != null) {
@@ -129,22 +128,11 @@ public class NewEventController extends VBox {
     }
 
     private void setUpTimeSpinner() {
-        // Set up the hour spinner with a range from 0 to 23 and default to current hour
         fxHoursSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, LocalTime.now().getHour()));
-
-        // Set up the minute spinner with a range from 0 to 59 and default to current minute
         fxMinutesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, LocalTime.now().getMinute()));
-
-        // Listener for the hour spinner - when it changes, update the event time
         fxHoursSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
-
-        // Listener for the minute spinner - when it changes, update the event time
         fxMinutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateEventTime());
-
-        // Listener for changes in event's time - update both spinners when time changes
         event.timeProperty().addListener((obs, oldTime, newTime) -> updateSpinners(newTime));
-
-        // Set initial values for the spinners based on event time
         updateSpinners(LocalTime.now());
     }
 
@@ -249,29 +237,31 @@ public class NewEventController extends VBox {
         }
     }
 
-
     @FXML
     void openMedia(ActionEvent actionEvent) {
         FileChooser fxFileChooser = new FileChooser();
         fxFileChooser.getExtensionFilters().clear();
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi", "*.mkv", "*.mov"));
         fxFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.flac"));
-        File file = fxFileChooser.showOpenDialog(null);
 
+        File file = fxFileChooser.showOpenDialog(null);
         if (file != null) {
             try {
                 Path selectedFile = file.toPath();
                 String relativeMediaPath = "media/" + selectedFile.getFileName().toString();
+                event.videoMediaPathProperty().set(relativeMediaPath);
 
                 Media media = new Media(file.toURI().toString());
-
                 loadMediaViewController(media);
 
             } catch (Exception e) {
-                e.printStackTrace();  // Handle error
+                e.printStackTrace();
             }
+        } else {
+            showError("No media file selected.");
         }
     }
+
 
     private void loadMediaViewController(Media media) {
         FXMLLoader mediaLoader = new FXMLLoader(getClass().getResource("media-view.fxml"));

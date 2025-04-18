@@ -53,8 +53,6 @@ public class SignUpController {
         showAlert("Sign Up successful! You can now log in.");
 
         closeWindow();
-
-        // Apply theme for the SignUp window after it's shown
         Platform.runLater(() -> {
             Stage stage = (Stage) signUpButton.getScene().getWindow(); // The stage where the scene is added
             Scene scene = stage.getScene();

@@ -19,7 +19,6 @@ import java.io.IOException;
  *  theme management (light/dark mode) and ensures that the selected theme is applied
  *  throughout the application.
  *
- *
  *****************************************************************************/
 public class EventManagerApplication extends Application {
 
@@ -57,21 +56,16 @@ public class EventManagerApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        // Load the login view first
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hi/event/vidmot/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
-        // Apply current theme to login scene
         scene.getStylesheets().add(getClass().getResource(currentTheme).toExternalForm());
 
-        // Set the application reference in the controller
         LoginController loginController = fxmlLoader.getController();
         loginController.setApplication(this);
 
-        // Apply the correct theme-specific logo
         loginController.applyTheme(currentTheme);
 
-        // Show login screen
         stage.setTitle("Login - Event Manager");
         stage.setScene(scene);
         stage.show();

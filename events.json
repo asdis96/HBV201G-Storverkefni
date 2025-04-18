@@ -38,4 +38,34 @@
   "imageMediaPathValue" : "media/monk.JPG",
   "timeValue" : "20:00:00",
   "descriptionValue" : "The greatest event of the year is finally here ! "
+}, {
+  "selectedValue" : false,
+  "titleValue" : "Tónleikar!",
+  "dateValue" : "2025-04-27",
+  "groupValue" : "Entertainment",
+  "statusValue" : "Active",
+  "videoMediaPathValue" : "",
+  "imageMediaPathValue" : "media/monk.JPG",
+  "timeValue" : "20:30:00",
+  "descriptionValue" : "Tónleikar fyrir alla fjölskylduna!"
+}, {
+  "selectedValue" : false,
+  "titleValue" : "Sundkennsla!",
+  "dateValue" : "2025-04-21",
+  "groupValue" : "Education",
+  "statusValue" : "Active",
+  "videoMediaPathValue" : "",
+  "imageMediaPathValue" : "media/sample_video.mp4",
+  "timeValue" : "08:30:00",
+  "descriptionValue" : "Sundkennsla fyrir byrjendur "
+}, {
+  "selectedValue" : false,
+  "titleValue" : "Söngvakeppni",
+  "dateValue" : "2025-04-25",
+  "groupValue" : "Entertainment",
+  "statusValue" : "Active",
+  "videoMediaPathValue" : "media/world_fixed.mp4",
+  "imageMediaPathValue" : "media/dark-logo.jpg",
+  "timeValue" : "20:20:00",
+  "descriptionValue" : "Söngvakeppnin mikla "
 } ]

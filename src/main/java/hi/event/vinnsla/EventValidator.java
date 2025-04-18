@@ -8,18 +8,24 @@ import java.util.List;
  *  Author    : Ásdís Halldóra L Stefánsdóttir
  *  Email: ahl4@hi.is
  *
- *  Description  : 
+ *  Description  : Utility class for validating {@link Event} objects.
+ * Provides methods to validate individual events as well as lists of events.
  *
  *
  *****************************************************************************/
 public class EventValidator {
 
-    // Base directory for media files
     private static final String MEDIA_BASE_PATH = "src/main/resources/hi/event/vidmot/";
 
-    // Validate a single Event object
+    /**
+     * Validates a single {@link Event} object.
+     * This method checks that all required fields (title, description, date, time)
+     * are not null or empty and that the media files (video and image) exist at the specified paths.
+     *
+     * @param event the {@link Event} object to validate
+     * @return true if the event is valid, false otherwise
+     */
     public static boolean isValid(Event event) {
-        // Validate required fields
         if (event.getTitleValue() == null || event.getTitleValue().isEmpty()) {
             System.err.println("Invalid event: Title is required.");
             return false;
@@ -40,20 +46,23 @@ public class EventValidator {
             return false;
         }
 
-        // Check if video media file exists using relative path
         if (!isMediaFileValid(event.getVideoMediaPathValue())) {
             return false;
         }
 
-        // Check if image media file exists using relative path
         if (!isMediaFileValid(event.getImageMediaPathValue())) {
             return false;
         }
 
-        return true;  // Event is valid if all checks passed
+        return true;
     }
 
-    // Check if a media file is valid
+    /**
+     * Checks if a media file exists at the specified relative path.
+     *
+     * @param mediaFilePath the relative path to the media file
+     * @return true if the file exists, false otherwise
+     */
     private static boolean isMediaFileValid(String mediaFilePath) {
         if (mediaFilePath != null && !mediaFilePath.isEmpty()) {
             String filePath = Paths.get(MEDIA_BASE_PATH, mediaFilePath).toString();
@@ -66,7 +75,13 @@ public class EventValidator {
         return true;
     }
 
-    // Validate a list of events
+    /**
+     * Validates a list of {@link Event} objects.
+     * This method checks each event in the list and returns only the valid events.
+     *
+     * @param events the list of {@link Event} objects to validate
+     * @return a list of valid {@link Event} objects
+     */
     public static List<Event> validateEvents(List<Event> events) {
         List<Event> validEvents = new ArrayList<>();
         for (Event event : events) {

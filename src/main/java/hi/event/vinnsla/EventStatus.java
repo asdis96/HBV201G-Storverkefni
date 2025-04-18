@@ -2,11 +2,11 @@ package hi.event.vinnsla;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 /******************************************************************************
- *  Nafn    : Ásdís Stefánsdóttir
- *  T-póstur: ahl4@hi.is
- *  Lýsing  : Vinnsluklasi fyrir status af viðburðum
+ *  Author    : Ásdís Halldóra L Stefánsdóttir
+ *  Email: ahl4@hi.is
+ *
+ *  Description  : Enum representing the status of an event.
  *
  *
  *****************************************************************************/
@@ -32,6 +32,14 @@ public enum EventStatus {
         return statusName;
     }
 
+    /**
+     * Converts a string to its corresponding EventStatus enum.
+     * This method is used by Jackson during deserialization.
+     *
+     * @param status The string representation of the status.
+     * @return The corresponding EventStatus enum.
+     * @throws IllegalArgumentException If the provided string does not match any status.
+     */
     @JsonCreator
     public static EventStatus fromString(String status) {
         for (EventStatus eventStatus : EventStatus.values()) {
